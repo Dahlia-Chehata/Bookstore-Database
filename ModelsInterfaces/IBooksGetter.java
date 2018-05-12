@@ -1,3 +1,5 @@
+package ModelsInterfaces;
+
 import java.util.ArrayList;
 
 /**
@@ -15,6 +17,24 @@ public interface IBooksGetter {
      */
     IBooksGetter getBooksByTitle(String bookTitle);
 
+    /**
+     * Get all the Books with this id.
+     * This will be ANDED by the rest of the conditions.
+     * @param bookId
+     * @return the same object to be added with more conditions or
+     * finalized by get(), booksCount().
+     */
+    IBooksGetter getBooksById(int bookId);
+
+    /**
+     * Get all the Books with this ISBN.
+     * This will be ANDED by the rest of the conditions.
+     * @param bookISBN
+     * @return the same object to be added with more conditions or
+     * finalized by get(), booksCount().
+     */
+    IBooksGetter getBooksByISBN(String bookISBN);
+    
     /**
      * Get all the Books written by this author.
      * This will be ANDED by the rest of the conditions.
@@ -52,7 +72,7 @@ public interface IBooksGetter {
      * @return the same object to be added with more conditions or
      * finalized by get(), booksCount().
      */
-    IBooksGetter getBooksBySellingPrice(int startingPrice, int endingPrice);
+    IBooksGetter getBooksBySellingPrice(double startingPrice, double endingPrice);
     
     /**
      *

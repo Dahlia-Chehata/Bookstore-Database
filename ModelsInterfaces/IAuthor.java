@@ -1,3 +1,5 @@
+package ModelsInterfaces;
+
 import java.util.ArrayList;
 
 /**
@@ -25,5 +27,13 @@ public interface IAuthor {
      * and false if deletion fails and the author still author to this book.
      */
     boolean removeBook(IBook bookToBeRemoved);
+    
+    /**
+     *
+     * @param bookToBeAdded
+     * @return true if the book existed and added successfully to the author,
+     * and false if fails.
+     */
+    boolean addBook(IBook bookToBeAdded);
 
 }

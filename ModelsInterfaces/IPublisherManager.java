@@ -1,3 +1,5 @@
+package ModelsInterfaces;
+
 import java.util.ArrayList;
 
 /**
@@ -21,6 +23,13 @@ public interface IPublisherManager {
      */
     ArrayList<IPublisher> getByName(String name);   
 
+    /**
+     *
+     * @param bookName the name of the book.
+     * @return object of the Publisher if found, null otherwise.
+     */
+    IPublisher getByBookName(String bookName); 
+    
     /**
      *
      * @return ArrayList of all the publisher existing in the application.

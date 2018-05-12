@@ -1,3 +1,5 @@
+package ModelsInterfaces;
+
 import java.util.ArrayList;
 
 /**
@@ -12,20 +14,6 @@ public interface IBookManager {
      * with given conditions.
      */
     IBooksGetter getBooks();
-    
-    /**
-     *
-     * @param bookId, the id of the wanted book.
-     * @return ArrayList of Books with same Id but with different ISBNs.
-     */
-    ArrayList<IBook> getBookById(int bookId);
-
-    /**
-     *
-     * @param bookISBN, the ISBN of the wanted book
-     * @return object implements IBook if found, null otherwise.
-     */
-    IBook getBookByISBN(int bookISBN);
 
     /**
      * This will add book to application.

@@ -1,3 +1,5 @@
+package ModelsInterfaces;
+
 /**
  *
  * @author Fares
