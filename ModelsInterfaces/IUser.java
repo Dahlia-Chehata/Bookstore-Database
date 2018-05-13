@@ -29,6 +29,12 @@ public interface IUser {
 
     /**
      *
+     * @return the username of this user.
+     */
+    String getUsername() throws NotFound;
+    
+    /**
+     *
      * @return the email of this user.
      */
     String getEmail() throws NotFound;
@@ -80,6 +86,13 @@ public interface IUser {
      */
     boolean changeLName(String newLName) throws NotFound;
 
+    /**
+     *
+     * @param newUsername new username for the user.
+     * @return true if the update done successfully, false otherwise.
+     */
+    boolean changeUsername(String newUsername) throws NotFound;
+    
     /**
      *
      * @param newEmail new email for the user.

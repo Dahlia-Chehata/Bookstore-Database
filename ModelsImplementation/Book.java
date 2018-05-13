@@ -254,7 +254,7 @@ public class Book implements IBook{
             if(data.next()){
                 //This can also throw NotFound
                 try{
-                    return Publisher(data.getInt("Publisher_id"));
+                    return new Publisher(data.getInt("Publisher_id"));
                 } catch(NotFound ex){
                     return getPublisher();
                 }
@@ -278,10 +278,9 @@ public class Book implements IBook{
         try {
         
             statementSQL.setString(1, newData);
-            statementSQL.executeUpdate();
+            int rows = statementSQL.executeUpdate();
 
-            ResultSet key = statementSQL.getGeneratedKeys();
-	    if(!key.next()){
+	    if(rows == 0){
                 throw new NotFound();
             }
 	    
@@ -305,10 +304,9 @@ public class Book implements IBook{
         try {
         
             statementSQL.setInt(1, newData);
-            statementSQL.executeUpdate();
+            int rows = statementSQL.executeUpdate();
 
-            ResultSet key = statementSQL.getGeneratedKeys();
-	    if(!key.next()){
+	    if(rows == 0){
                 throw new NotFound();
             }
 	    
@@ -332,10 +330,9 @@ public class Book implements IBook{
         try {
         
             statementSQL.setDouble(1, newData);
-            statementSQL.executeUpdate();
+            int rows = statementSQL.executeUpdate();
 
-            ResultSet key = statementSQL.getGeneratedKeys();
-	    if(!key.next()){
+	    if(rows == 0){
                 throw new NotFound();
             }
 	    
