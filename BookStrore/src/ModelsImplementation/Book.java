@@ -249,23 +249,24 @@ public class Book implements IBook{
     @Override
     public IPublisher getPublisher() throws NotFound{
 
-        ResultSet data = dbBookGetter();
-        try{
-            if(data.next()){
-                //This can also throw NotFound
-                try{
-                    return Publisher(data.getInt("Publisher_id"));
-                } catch(NotFound ex){
-                    return getPublisher();
-                }
-            }else{
-                throw new NotFound();
-            }
-        } catch (SQLException ex){
-            errorHandler.report("Book Class", ex.getMessage());
-            errorHandler.terminate();
-            return null;
-        }
+    	return null;
+//        ResultSet data = dbBookGetter();
+//        try{
+//            if(data.next()){
+//                //This can also throw NotFound
+//                try{
+//                    return Publisher(data.getInt("Publisher_id"));
+//                } catch(NotFound ex){
+//                    return getPublisher();
+//                }
+//            }else{
+//                throw new NotFound();
+//            }
+//        } catch (SQLException ex){
+//            errorHandler.report("Book Class", ex.getMessage());
+//            errorHandler.terminate();
+//            return null;
+//        }
 
     }
 

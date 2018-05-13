@@ -8,6 +8,7 @@ import java.awt.Font;
 import javax.swing.SwingConstants;
 
 import controller.GuiController;
+import controller.IFrameController;
 
 import javax.swing.JButton;
 import javax.swing.JPasswordField;
@@ -15,7 +16,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
 
-public class LoginPage {
+public class LoginPage implements IFrameController {
 
 	GuiController g = new GuiController();
 
@@ -82,10 +83,13 @@ public class LoginPage {
 		btn_login.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String email_address = email.getText();
+//				@SuppressWarnings("deprecation")
 				String user_password = password.getText();
-				String[] login_information = null;
+				String[] login_information = new String[2];
 				login_information[0] = email_address;
 				login_information[1] = user_password;
+				System.out.println(email_address);
+				System.out.println(user_password);
 				if (!g.set_login_information(login_information)) { //user not found
 					error_label.setVisible(true);
 					System.out.println("ERROR!");
@@ -107,6 +111,12 @@ public class LoginPage {
 		password.setBounds(143, 227, 183, 26);
 		frame.getContentPane().add(password);
 
+
+	}
+
+	@Override
+	public void hide_frame() {
+		// TODO Auto-generated method stub
 
 	}
 

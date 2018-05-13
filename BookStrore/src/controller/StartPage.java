@@ -10,7 +10,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
-public class StartPage {
+public class StartPage implements IFrameController {
 
 	private JFrame frame;
 	/**
@@ -46,9 +46,6 @@ public class StartPage {
 
 	}
 
-	public void hide_frame() {
-		this.frame.setVisible(false);
-	}
 
 
 	public int get_action () {
@@ -92,6 +89,14 @@ public class StartPage {
 		lblNewLabel.setFont(new Font("Times New Roman", Font.BOLD, 15));
 		lblNewLabel.setBounds(20, 11, 378, 57);
 		frame.getContentPane().add(lblNewLabel);
+	}
+
+
+
+	@Override
+	public void hide_frame() {
+		this.frame.setVisible(false);
+
 	}
 
 }

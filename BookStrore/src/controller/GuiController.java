@@ -7,12 +7,17 @@ import gui.user_handling.LoginPage;
 public class GuiController {
 
 	IUser loggedin_user;
-	IUserManager user;
-
-
+	IUserManager user_manager;
 
 	private String[] login_information;
 	private String[] signup_information;
+
+
+	public GuiController() {
+		user_manager = new User
+
+	}
+
 
 	public static void main(String[] args) {
 		int action_performed = start_screen();
@@ -72,7 +77,7 @@ public class GuiController {
 	}
 
 	private boolean send_login_information() {
-		loggedin_user = user.getByEmailAndPassword(login_information[0], login_information[1]);
+		loggedin_user = user_manager.getByEmailAndPassword(login_information[0], login_information[1]);
 		if (loggedin_user != null) { //An available user
 			return true;
 		} else { //user not found or password doesn't match
