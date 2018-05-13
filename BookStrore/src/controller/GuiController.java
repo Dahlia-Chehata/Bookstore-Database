@@ -1,8 +1,14 @@
 package controller;
 
+import ModelsInterfaces.IUser;
+import ModelsInterfaces.IUserManager;
 import gui.user_handling.LoginPage;
 
 public class GuiController {
+
+	IUser loggedin_user;
+	IUserManager user;
+
 
 
 	private String[] login_information;
@@ -57,14 +63,21 @@ public class GuiController {
 		//to database
 	}
 
-	public void set_login_information(String[] login_information) {
+	public boolean set_login_information(String[] login_information) {
 		this.login_information = login_information;
-		send_login_information();
+		if (!send_login_information()) {
+			return false;
+		}
+		return true;
 	}
 
-	private void send_login_information() {
-//		login_information;
-		//send to database
+	private boolean send_login_information() {
+		loggedin_user = user.getByEmailAndPassword(login_information[0], login_information[1]);
+		if (loggedin_user != null) { //An available user
+			return true;
+		} else { //user not found or password doesn't match
+			return false;
+		}
 	}
 
 
