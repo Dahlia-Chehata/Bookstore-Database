@@ -6,6 +6,7 @@ import ModelsInterfaces.IAuthor;
 import ModelsInterfaces.IBook;
 import ModelsInterfaces.IBooksGetter;
 import ModelsInterfaces.ICategory;
+import ModelsInterfaces.IPublisher;
 import Mysql.MysqlHandler;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -104,6 +105,18 @@ public class BooksGetter implements IBooksGetter{
         return this;
     }
     
+    public IBooksGetter getBooksByPublisher(IPublisher publisher){
+        columnsNames.add("Books_ISBNs.Publisher_id");
+        try{
+            intArguments.add(publisher.getId());
+        // If the publisher not found then invalidate the query.
+        } catch (NotFound ex) {
+            invalid = true;
+        }
+        return this;
+    }
+
+    
     String getCondition(){
         
         String condition = new String();
@@ -167,6 +180,9 @@ public class BooksGetter implements IBooksGetter{
                     statementSQL.setString(i+1,stringArguments.get(stringPointer++));
                     break;
                 case "books.Book_id":
+                    statementSQL.setInt(i+1,intArguments.get(intPointer++));
+                    break;
+                case "Books_ISBNs.Publisher_id":
                     statementSQL.setInt(i+1,intArguments.get(intPointer++));
                     break;
                 default:
