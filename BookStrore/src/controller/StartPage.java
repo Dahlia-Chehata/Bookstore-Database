@@ -51,7 +51,7 @@ public class StartPage implements IFrameController {
 	public int get_action () {
 		//this.frame.setVisible(false);
 
-		System.out.println(action_number);
+		System.out.print(action_number);
 
 		return action_number;
 	}

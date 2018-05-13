@@ -7,6 +7,7 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.SwingConstants;
 
+import HelperClasses.NotFound;
 import controller.GuiController;
 import controller.IFrameController;
 
@@ -90,9 +91,14 @@ public class LoginPage implements IFrameController {
 				login_information[1] = user_password;
 				System.out.println(email_address);
 				System.out.println(user_password);
-				if (!g.set_login_information(login_information)) { //user not found
-					error_label.setVisible(true);
-					System.out.println("ERROR!");
+				try {
+					if (!g.set_login_information(login_information)) { //user not found
+						error_label.setVisible(true);
+						System.out.println("ERROR!");
+					}
+				} catch (NotFound e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				};
 
 			}
@@ -116,8 +122,7 @@ public class LoginPage implements IFrameController {
 
 	@Override
 	public void hide_frame() {
-		// TODO Auto-generated method stub
-
+		this.frame.setVisible(false);
 	}
 
 

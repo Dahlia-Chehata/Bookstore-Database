@@ -9,6 +9,9 @@ import java.awt.GridLayout;
 import javax.swing.JButton;
 import java.awt.Font;
 import javax.swing.JTable;
+
+import controller.Manager_controller;
+
 import javax.swing.JScrollPane;
 import java.awt.event.ActionListener;
 import java.util.Enumeration;
@@ -18,31 +21,36 @@ import javax.swing.ButtonGroup;
 
 public class ManagerActionsPage {
 
+	Manager_controller m;
+
 	private JFrame frame;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					ManagerActionsPage window = new ManagerActionsPage();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+//	public static void main(String[] args) {
+//
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					ManagerActionsPage window = new ManagerActionsPage();
+//					window.frame.setVisible(true);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//	}
 
 	/**
 	 * Create the application.
 	 */
 	public ManagerActionsPage() {
+
 		initialize();
+		this.frame.setVisible(true);
+
 	}
 
 	/**
@@ -55,11 +63,20 @@ public class ManagerActionsPage {
 		frame.getContentPane().setLayout(null);
 
 		JButton btn_add_new_book = new JButton("Add a new book");
+		btn_add_new_book.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				m.add_book();
+			}
+		});
 		btn_add_new_book.setFont(new Font("Times New Roman", Font.BOLD, 13));
 		btn_add_new_book.setBounds(72, 72, 128, 38);
 		frame.getContentPane().add(btn_add_new_book);
 
 		JButton btn_place_order = new JButton("Place order");
+		btn_place_order.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		btn_place_order.setFont(new Font("Times New Roman", Font.BOLD, 13));
 		btn_place_order.setBounds(72, 141, 128, 38);
 		frame.getContentPane().add(btn_place_order);
@@ -74,6 +91,10 @@ public class ManagerActionsPage {
 		frame.getContentPane().add(btn_modify_book);
 
 		JButton btn_promote_customers = new JButton("Promote customers");
+		btn_promote_customers.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		btn_promote_customers.setFont(new Font("Times New Roman", Font.BOLD, 13));
 		btn_promote_customers.setBounds(237, 141, 149, 38);
 		frame.getContentPane().add(btn_promote_customers);
@@ -164,5 +185,10 @@ public class ManagerActionsPage {
 
 	    return null;
 	}
+
+
+	public void set_manager_controller (Manager_controller m) {
+		this.m = m;
+}
 
 }

@@ -7,11 +7,21 @@ import javax.swing.JTextField;
 import java.awt.Font;
 import java.awt.Color;
 import javax.swing.SwingConstants;
+
+import HelperClasses.NotFound;
+import ModelsInterfaces.IUserStatus;
+import controller.GuiController;
+import controller.IFrameController;
+
 import java.awt.TextArea;
 import javax.swing.JButton;
 import javax.swing.JPasswordField;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
-public class SignupPage {
+public class SignupPage implements IFrameController {
+
+	GuiController g = new GuiController();
 
 	private JFrame frame;
 	private JTextField username;
@@ -83,6 +93,12 @@ public class SignupPage {
 		frame.getContentPane().add(username);
 		username.setColumns(10);
 
+		JLabel error_label = new JLabel("The passwords don't match!");
+		error_label.setForeground(Color.RED);
+		error_label.setBounds(25, 420, 335, 19);
+		error_label.setVisible(false);
+		frame.getContentPane().add(error_label);
+
 		JLabel lblRepeatPassword = new JLabel("Repeat password");
 		lblRepeatPassword.setFont(new Font("Times New Roman", Font.BOLD, 15));
 		lblRepeatPassword.setBounds(266, 270, 145, 28);
@@ -150,12 +166,52 @@ public class SignupPage {
 
 		lblNewLabel = new JLabel("On ordering you may choose to enter a new shipping address.");
 		lblNewLabel.setVerticalAlignment(SwingConstants.TOP);
-		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel.setHorizontalAlignment(SwingConstants.LEFT);
 		lblNewLabel.setForeground(Color.GRAY);
-		lblNewLabel.setBounds(50, 395, 302, 14);
+		lblNewLabel.setBounds(50, 395, 389, 19);
 		frame.getContentPane().add(lblNewLabel);
 
+		password = new JPasswordField();
+		password.setBounds(50, 302, 152, 23);
+		frame.getContentPane().add(password);
+
+		password_repeat = new JPasswordField();
+		password_repeat.setBounds(287, 302, 152, 23);
+		frame.getContentPane().add(password_repeat);
+
 		btn_signup = new JButton("Sign Up");
+		btn_signup.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+
+				if(password.getText().equals(password_repeat.getText())) {
+					error_label.setVisible(false);
+
+					String[] signup_information = new String[8];
+					signup_information[0] = username.getText();
+					signup_information[1] = email.getText();
+					signup_information[2] = password.getText();
+					signup_information[3] = first_name.getText();
+					signup_information[4] = last_name.getText();
+					signup_information[5] = shipping_address.getText();
+					signup_information[6] = phone_number.getText();
+					signup_information[7] = first_name.getText();
+
+					try {
+						g.set_signup_information(signup_information);
+					} catch (NotFound e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+				} else {
+					error_label.setVisible(true);
+				}
+
+
+
+
+			}
+		});
 		btn_signup.setFont(new Font("Times New Roman", Font.BOLD, 17));
 		btn_signup.setBounds(331, 420, 108, 44);
 		frame.getContentPane().add(btn_signup);
@@ -206,7 +262,7 @@ public class SignupPage {
 		lblRequiredFields.setVerticalAlignment(SwingConstants.TOP);
 		lblRequiredFields.setHorizontalAlignment(SwingConstants.LEFT);
 		lblRequiredFields.setForeground(Color.GRAY);
-		lblRequiredFields.setBounds(36, 450, 75, 14);
+		lblRequiredFields.setBounds(36, 450, 134, 28);
 		frame.getContentPane().add(lblRequiredFields);
 
 		JLabel label_9 = new JLabel("*");
@@ -215,12 +271,11 @@ public class SignupPage {
 		label_9.setBounds(25, 450, 13, 14);
 		frame.getContentPane().add(label_9);
 
-		password = new JPasswordField();
-		password.setBounds(50, 302, 152, 23);
-		frame.getContentPane().add(password);
 
-		password_repeat = new JPasswordField();
-		password_repeat.setBounds(287, 302, 152, 23);
-		frame.getContentPane().add(password_repeat);
+	}
+
+	@Override
+	public void hide_frame() {
+		this.frame.setVisible(false);
 	}
 }

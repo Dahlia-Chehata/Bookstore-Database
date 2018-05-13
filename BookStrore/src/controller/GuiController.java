@@ -1,21 +1,34 @@
 package controller;
 
+import HelperClasses.NotFound;
+import ModelsImplementation.UserManager;
+import ModelsImplementation.UserStatus;
 import ModelsInterfaces.IUser;
 import ModelsInterfaces.IUserManager;
 import gui.user_handling.LoginPage;
+import gui.user_handling.SignupPage;
 
 public class GuiController {
 
+	static GuiController g;
+
 	IUser loggedin_user;
-	IUserManager user_manager;
+	static IUserManager user_manager;
 
 	private String[] login_information;
 	private String[] signup_information;
 
 
-	public GuiController() {
-		user_manager = new User
+	private static boolean pass_login_signup;
+	private static boolean is_manager;
 
+	public GuiController() {
+
+		g = this;
+
+		user_manager = new UserManager();
+
+		pass_login_signup = false;
 	}
 
 
@@ -29,7 +42,7 @@ public class GuiController {
 
 		case 2: //Sign up to a new user
 			System.out.println(action_performed + " Sign up");
-
+			user_signup();
 			break;
 
 
@@ -52,31 +65,60 @@ public class GuiController {
 
 	}
 
-	private static void user_log_in() {
-		LoginPage login_page = new LoginPage();
+	private static void user_signup() {
+		SignupPage signup_page = new SignupPage();
 	}
 
 
-	public void set_signup_information(String[] signup_information) {
+	private static void user_log_in() {
+		LoginPage login_page = new LoginPage();
+		pass_login_signup = true;
+
+		if (pass_login_signup) {
+			login_page.hide_frame();
+			is_manager = true;
+			if (is_manager) {
+				Manager_controller manager_controller = new Manager_controller(g);
+				manager_controller.start();
+			} else {
+				Customer_controller customer_controller = new Customer_controller(g);
+				customer_controller.start();
+			}
+		}
+
+	}
+
+	public void set_signup_information(String[] signup_information) throws NotFound {
 		this.signup_information = signup_information;
 		send_signup_information();
 	}
 
 
 
-	private void send_signup_information() {
-		//to database
+	private void send_signup_information() throws NotFound {
+		user_manager.addUser(signup_information[0], signup_information[1],
+				signup_information[2], signup_information[3], signup_information[4],
+				signup_information[5], signup_information[6], new UserStatus(0));
 	}
 
-	public boolean set_login_information(String[] login_information) {
+	public boolean set_login_information(String[] login_information) throws NotFound {
 		this.login_information = login_information;
 		if (!send_login_information()) {
+			pass_login_signup = false;
+
 			return false;
 		}
+		String status = loggedin_user.getStatus().getName();
+		if (status.equals("manager")) {
+			is_manager = true;
+		} else {
+			is_manager = false;
+		}
+		pass_login_signup = true;
 		return true;
 	}
 
-	private boolean send_login_information() {
+	private boolean send_login_information() throws NotFound {
 		loggedin_user = user_manager.getByEmailAndPassword(login_information[0], login_information[1]);
 		if (loggedin_user != null) { //An available user
 			return true;
