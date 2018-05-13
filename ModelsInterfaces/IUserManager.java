@@ -58,11 +58,12 @@ public interface IUserManager {
      * @param lname last name -  can't be empty.
      * @param sefaultShippingAddress can't be empty.
      * @param phoneNumber can't be empty.
+     * @param status can't be empty.
      * @return if the user registered successfully, User object will be returned
      * else, null will be returned.
      * @see IUser
      */
     IUser addUser(String username, String email, String password,
                   String fname, String lname, String sefaultShippingAddress,
-                  String phoneNumber);
+                  String phoneNumber, IUserStatus status);
 }
