@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * @author Fares
  */
 public interface IUser {
-
+    
     /**
      *
      * @return the id of this user.
@@ -32,7 +32,7 @@ public interface IUser {
      * @return the username of this user.
      */
     String getUsername() throws NotFound;
-
+    
     /**
      *
      * @return the email of this user.
@@ -92,7 +92,7 @@ public interface IUser {
      * @return true if the update done successfully, false otherwise.
      */
     boolean changeUsername(String newUsername) throws NotFound;
-
+    
     /**
      *
      * @param newEmail new email for the user.
@@ -135,5 +135,5 @@ public interface IUser {
      * also it will return false if the order isn't owned by this user.
      */
     boolean removeOrder(IOrder orderToBeDeleted) throws NotFound;
-
+    
 }

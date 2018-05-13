@@ -7,7 +7,7 @@ import java.util.ArrayList;
  * @author Fares
  */
 public interface IUserManager {
-
+    
     /**
      *
      * @param id the id of the wanted user.
@@ -41,7 +41,7 @@ public interface IUserManager {
      * @see IUser
      */
     IUser getByEmailAndPassword(String email, String password);
-
+    
     /**
      *
      * @return a ArrayList of all the registered users.
