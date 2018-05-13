@@ -43,6 +43,15 @@ public interface IBooksGetter {
      * finalized by get(), booksCount().
      */
     IBooksGetter getBooksByAuthor(IAuthor author);
+    
+    /**
+     * Get all the Books published by this publisher.
+     * This will be ANDED by the rest of the conditions.
+     * @param publisher
+     * @return the same object to be added with more conditions or
+     * finalized by get(), booksCount().
+     */
+    IBooksGetter getBooksByPublisher(IPublisher publisher);
 
     /**
      * Get all the Books in this category.

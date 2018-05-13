@@ -21,14 +21,7 @@ public interface IPublisherManager {
      * @return ArrayList of all publishers with this name - the array could
      * be empty.
      */
-    ArrayList<IPublisher> getByName(String name);   
-
-    /**
-     *
-     * @param bookName the name of the book.
-     * @return object of the Publisher if found, null otherwise.
-     */
-    IPublisher getByBookName(String bookName); 
+    ArrayList<IPublisher> getByName(String name);    
     
     /**
      *
