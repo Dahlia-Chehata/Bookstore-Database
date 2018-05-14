@@ -143,6 +143,17 @@ FOR EACH ROW BEGIN
 END$$
 DELIMITER ;
 
+-- check if the order is confirmed before deletion
+DROP trigger if exists delete_manager_order ;
+DELIMITER $$
+CREATE TRIGGER delete_manager_order BEFORE DELETE ON manager_order
+FOR EACH ROW BEGIN
+   IF (confirmed=0) THEN
+       CALL raise_error;
+   END IF;
+END$$
+DELIMITER ;
+
 -- check if email is in a valid format before update
 DROP trigger if exists valid_email_before_update ;
 DELIMITER $$
