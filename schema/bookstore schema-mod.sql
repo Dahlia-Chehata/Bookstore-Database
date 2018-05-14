@@ -105,7 +105,7 @@ DELIMITER $$
 CREATE TRIGGER threshold_after_update AFTER update ON Books_ISBNs
 FOR EACH ROW BEGIN
    IF (NEW.Available_Quantity < OLD.Threshold) THEN
-	insert into book_store.manager_order (ISBN,no_of_copies) values(new.ISBN,20);
+	  insert into book_store.manager_order (ISBN,no_of_copies,confirmed) values(new.ISBN,20,false);
    END IF;
 END$$
 DELIMITER ;
@@ -116,7 +116,7 @@ DELIMITER $$
 CREATE TRIGGER threshold_after_insert AFTER insert ON Books_ISBNs
 FOR EACH ROW BEGIN
    IF (NEW.Available_Quantity < new.Threshold) THEN
-	  insert into book_store.manager_order (ISBN,no_of_copies) values(new.ISBN,20);
+	  insert into book_store.manager_order (ISBN,no_of_copies,confirmed) values(new.ISBN,20,false);
    END IF;
 END$$
 DELIMITER ;
