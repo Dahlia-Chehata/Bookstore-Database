@@ -1,5 +1,6 @@
 package ModelsInterfaces;
 
+import HelperClasses.NotFound;
 import java.util.ArrayList;
 
 /**
@@ -12,42 +13,42 @@ public interface IOrder {
      *
      * @return the id of the order.
      */
-    int getId();
+    int getId() throws NotFound;
 
     /**
      *
      * @return object of the user ordered this order.
      */
-    IUser getUser();
+    IUser getUser() throws NotFound;
 
     /**
      *
      * @return the total price paid for this order.
      */
-    double getTotalPrice();
+    double getTotalPrice() throws NotFound;
 
     /**
      *
      * @return the time when this order was ordered.
      */
-    String getTimeStamp();
+    String getTimeStamp() throws NotFound;
 
     /**
      *
      * @return the credit card number used for this order.
      */
-    String getCreditCardNo();
+    String getCreditCardNo() throws NotFound;
 
     /**
      *
      * @return the expiry date of this credit card.
      */
-    String getCreditExpiryDate();
+    String getCreditExpiryDate() throws NotFound;
 
     /**
      *
      * @return ArrayList of the all the books ordered in the order.
      */
-    ArrayList<IOrderItem> getBooks();
+    ArrayList<IOrderItem> getBooks() throws NotFound;
     
 }

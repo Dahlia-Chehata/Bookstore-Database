@@ -51,13 +51,6 @@ public interface IBook {
      * @return the minimum number of book that should always exist.  
      */
     int getThreshold() throws NotFound;
-
-    /**
-     *
-     * @return the quantity to be ordered automatically above the threshold
-     * incase the availability become lower than the threshold.
-     */
-    int getQuantityToBeOrdered() throws NotFound;
     
     /**
      *
@@ -113,13 +106,6 @@ public interface IBook {
      */
     boolean setThreshold(int newThreshold) throws NotFound;
 
-    /**
-     *
-     * @param newQuantityToBeOrdered
-     * @return true if update succeeded, false otherwise.
-     */
-    boolean setQuantityToBeOrdered(int newQuantityToBeOrdered) throws NotFound;
-    
     /**
      *
      * @param newCategory

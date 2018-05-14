@@ -34,7 +34,7 @@ public interface IBookManager {
     IBook addBook(String title, ICategory category,
             String ISBN, IPublisher publisher, int publicationYear,
             double price, int availableQuantity, int threshold,
-            int quantityToBeOrderd, ArrayList<IAuthor> authors);
+            ArrayList<IAuthor> authors);
 
     /**
      * Get top X sold book in the time range.

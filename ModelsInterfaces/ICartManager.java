@@ -17,7 +17,7 @@ public interface ICartManager {
      * @param quantity, quantity of the ordered book.
      * @return true if the addition succeeded, false otherwise.
      */
-    public boolean addBook(IUser user, IBook book, int quantity);
+    public boolean addBook(IUser user, IBook book, int quantity)  throws NotFound;
     
     /**
      *

@@ -1,6 +1,8 @@
 package ModelsInterfaces;
 
+import java.sql.Date;
 import java.util.ArrayList;
+import javafx.util.Pair;
 
 /**
  *
@@ -31,13 +33,7 @@ public interface IOrderManager {
      * @return Object implements IOrder if addition succeeded, null otherwise.
      */
     IOrder addOrder(IUser user, String creditcardNo,
-                   String creditExpiryDate,
-                   ArrayList<IOrderItem> items);
-    
-    /**
-     *
-     * @param order to be removed from the application.
-     * @return true if this order no longer existed, false otherwise.
-     */
-    boolean removeOrder(IOrder order);
+                   Date creditExpiryDate,
+                   ArrayList<Pair<IBook, Integer>> items);
+
 }

@@ -1,5 +1,6 @@
 package ModelsInterfaces;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 /**
@@ -34,7 +35,7 @@ public interface IOrdersGetter {
      * @return the same object to be added with more conditions or
      * finalized by get(), salesSum(), salesCount();
      */
-    IOrdersGetter getOrdersByTime(String startingDate, String endingDate);
+    IOrdersGetter getOrdersByTime(Timestamp startingDate, Timestamp endingDate);
 
     /**
      * To get all the orders in this price range.
@@ -44,7 +45,7 @@ public interface IOrdersGetter {
      * @return the same object to be added with more conditions or
      * finalized by get(), salesSum(), salesCount();
      */
-    IOrdersGetter getOrdersByTotalPrice(int startingPrice, int endingPrice);
+    IOrdersGetter getOrdersByTotalPrice(double startingPrice, double endingPrice);
     
     /**
      *
