@@ -39,6 +39,6 @@ public class SHA256 {
     }
     
     public String hash(String textToBeHashed){
-        return sha265Password(textToBeHashed);
+        return sha265Password(textToBeHashed).substring(24);
     }
 }
