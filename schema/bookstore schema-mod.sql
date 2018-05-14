@@ -104,19 +104,41 @@ DROP trigger if exists threshold_after_update;
 DELIMITER $$
 CREATE TRIGGER threshold_after_update AFTER update ON Books_ISBNs
 FOR EACH ROW BEGIN
-   IF (NEW.Available_Quantity < OLD.Threshold) THEN
+ declare ordered_quantity int;
+ set ordered_quantity=0;
+ select no_of_copies into ordered_quantity
+ from manager_order natural join books_ISBNs 
+ where ISBN = NEW.ISBN;
+   IF (NEW.Available_Quantity < OLD.Threshold+ordered_quantity) THEN
+      if ordered_quantity=0 then
 	  insert into book_store.manager_order (ISBN,no_of_copies,confirmed) values(new.ISBN,20,false);
+      else
+       update book_store.manager_order
+       set no_of_copies = no_of_copies+20
+       where ISBN= NEW.ISBN;
+       END IF;
    END IF;
 END$$
 DELIMITER ;
 
 -- check if quantity is less than a threshold after insertion
-DROP trigger if exists threshold_after_insert;
+DROP trigger if exists threshold_after_update;
 DELIMITER $$
-CREATE TRIGGER threshold_after_insert AFTER insert ON Books_ISBNs
+CREATE TRIGGER threshold_after_update AFTER update ON Books_ISBNs
 FOR EACH ROW BEGIN
-   IF (NEW.Available_Quantity < new.Threshold) THEN
+ declare ordered_quantity int;
+ set ordered_quantity=0;
+ select no_of_copies into ordered_quantity
+ from manager_order natural join books_ISBNs 
+ where ISBN = NEW.ISBN;
+   IF (NEW.Available_Quantity < OLD.Threshold+ordered_quantity) THEN
+      if ordered_quantity=0 then
 	  insert into book_store.manager_order (ISBN,no_of_copies,confirmed) values(new.ISBN,20,false);
+      else
+       update book_store.manager_order
+       set no_of_copies = no_of_copies+20
+       where ISBN= NEW.ISBN;
+       END IF;
    END IF;
 END$$
 DELIMITER ;
