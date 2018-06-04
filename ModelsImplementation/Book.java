@@ -18,9 +18,10 @@ import java.util.ArrayList;
  */
 public class Book implements IBook{
 
-    private String bookISBN;
+    private final String bookISBN;
+    private final int bookId;
     private PreparedStatement statementSQL;
-    private ErrorHandler errorHandler;
+    private final ErrorHandler errorHandler;
     
     public Book(String bookISBN) throws NotFound{
         //set Data
@@ -29,10 +30,10 @@ public class Book implements IBook{
         statementSQL = null;
         
         //vlidate the ISBN
-        getISBN();
+        this.bookId = getID();
     }
     
-    private ResultSet dbBookGetter() throws NotFound{
+    private ResultSet dbBookGetter(){
         
         String sqlQuery = "SELECT * FROM `Books_ISBNs` INNER JOIN `books` " + 
                 " ON `Books_ISBNs`.`Book_id` = `books`.`Book_id` " +
@@ -52,149 +53,188 @@ public class Book implements IBook{
             errorHandler.terminate();
         }
         
-        //Null the selectorStatemen
-        MysqlHandler.getInstance().closePreparedStatement(statementSQL);
-        statementSQL = null;
-        
         return data;
     }
     
     @Override
     public int getID() throws NotFound{
+        
         ResultSet data = dbBookGetter();
+        int bookId = -1;
+        
         try{
             if(data.next()){
-                return data.getInt("Book_id");
+                bookId = data.getInt("Book_id");
             }else{
                 throw new NotFound();
             }
         } catch (SQLException ex){
             errorHandler.report("Book Class", ex.getMessage());
             errorHandler.terminate();
-            return -1;
+        } finally {
+            //Close && nullify the statement
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null;
         }
+        
+        return bookId;
     }
 
     @Override
     public String getISBN() throws NotFound{
+        
         ResultSet data = dbBookGetter();
+        String ISBN = "";
+        
         try{
             if(data.next()){
-                return data.getString("ISBN");
+                ISBN = data.getString("ISBN");
             }else{
                 throw new NotFound();
             }
         } catch (SQLException ex){
             errorHandler.report("Book Class", ex.getMessage());
             errorHandler.terminate();
-            return "";
+        } finally {
+            //Close && nullify the statement
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null;
         }
+        
+        return ISBN;
     }
 
     @Override
     public String getTitle() throws NotFound{
+        
         ResultSet data = dbBookGetter();
+        String title = "";
+        
         try{
             if(data.next()){
-                return data.getString("Title");
+                title = data.getString("Title");
             }else{
                 throw new NotFound();
             }
         } catch (SQLException ex){
             errorHandler.report("Book Class", ex.getMessage());
             errorHandler.terminate();
-            return "";
+        } finally {
+            //Close && nullify the statement
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null;
         }
+        
+        return title;
     }
 
     @Override
     public int getPublicationYear() throws NotFound{
+        
         ResultSet data = dbBookGetter();
+        int year = -1;
+        
         try{
             if(data.next()){
-                return data.getInt("Publication_Year");
+                year = data.getInt("Publication_Year");
             }else{
                 throw new NotFound();
             }
         } catch (SQLException ex){
             errorHandler.report("Book Class", ex.getMessage());
             errorHandler.terminate();
-            return -1;
+        } finally {
+            //Close && nullify the statement
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null;
         }
+        
+        return year;
     }
 
     @Override
     public double getPrice() throws NotFound{
+        
         ResultSet data = dbBookGetter();
+        double price = -1;
+        
         try{
             if(data.next()){
-                return data.getInt("Selling_price");
+                price = data.getInt("Selling_price");
             }else{
                 throw new NotFound();
             }
         } catch (SQLException ex){
             errorHandler.report("Book Class", ex.getMessage());
             errorHandler.terminate();
-            return -1;
+        } finally {
+            //Close && nullify the statement
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null;
         }
+        
+        return price;
     }
 
     @Override
     public int getAvailableQuantity() throws NotFound{
+        
         ResultSet data = dbBookGetter();
+        int quantity = -1;
+        
         try{
             if(data.next()){
-                return data.getInt("Available_Quantity");
+                quantity = data.getInt("Available_Quantity");
             }else{
                 throw new NotFound();
             }
         } catch (SQLException ex){
             errorHandler.report("Book Class", ex.getMessage());
             errorHandler.terminate();
-            return -1;
+        } finally {
+            //Close && nullify the statement
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null;
         }
+        
+        return quantity;
     }
 
     @Override
     public int getThreshold() throws NotFound{
+        
         ResultSet data = dbBookGetter();
+        int threshold = -1;
+        
         try{
             if(data.next()){
-                return data.getInt("Threshold");
+                threshold = data.getInt("Threshold");
             }else{
                 throw new NotFound();
             }
         } catch (SQLException ex){
             errorHandler.report("Book Class", ex.getMessage());
             errorHandler.terminate();
-            return -1;
+        } finally {
+            //Close && nullify the statement
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null;
         }
-    }
-
-    @Override
-    public int getQuantityToBeOrdered() throws NotFound{
-        ResultSet data = dbBookGetter();
-        try{
-            if(data.next()){
-                return data.getInt("QuantityToBeOrdered");
-            }else{
-                throw new NotFound();
-            }
-        } catch (SQLException ex){
-            errorHandler.report("Book Class", ex.getMessage());
-            errorHandler.terminate();
-            return -1;
-        }
+        
+        return threshold;
     }
 
     @Override
     public ICategory getCategory() throws NotFound{
+        
         ResultSet data = dbBookGetter();
+        ICategory category = null;
+        
         try{
             if(data.next()){
                 //This can also throw NotFound
                 try{
-                    return new Category(data.getInt("category_id"));
+                    category = new Category(data.getInt("category_id"));
                 } catch(NotFound ex){
                     return getCategory();
                 }
@@ -204,30 +244,37 @@ public class Book implements IBook{
         } catch (SQLException ex){
             errorHandler.report("Book Class", ex.getMessage());
             errorHandler.terminate();
-            return null;
+        } finally {
+            //Close && nullify the statement
+            if(statementSQL != null){
+                MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+                statementSQL = null;
+            }
         }
+        
+        return category;
     }
 
     @Override
     public ArrayList<IAuthor> getAuthors() throws NotFound{
         
-        String sqlQuery = "SELECT `Author_Name` FROM `Authors` WHERE `Book_id` = ?";
+        String sqlQuery = "SELECT Author_Name FROM `Authors` WHERE `Authors`.`Book_id` = ?";
         
         //data to be returned
         ArrayList<IAuthor> toBeReturned = new ArrayList<>();
         AuthorManager authorGetter = new AuthorManager();
         
         statementSQL = MysqlHandler.getInstance().getPreparedStatement(sqlQuery);
-        ResultSet data;
+        ResultSet dataHandler;
         
         try {
             
-            statementSQL.setInt(1, getID());
+            statementSQL.setInt(1, bookId);
             statementSQL.execute();
-            data = statementSQL.getResultSet();
+            dataHandler = statementSQL.getResultSet();
 
-            while(data.next()){
-                IAuthor author = authorGetter.getOrAddAuthor(data.getString("Author_Name"));
+            while(dataHandler.next()){
+                IAuthor author = authorGetter.getOrAddAuthor(dataHandler.getString("Author_Name"));
                 
                 if(author != null){
                     toBeReturned.add(author);
@@ -239,7 +286,7 @@ public class Book implements IBook{
             errorHandler.terminate();
         }
         
-        //Null the selectorStatemen
+        //Null the statement
         MysqlHandler.getInstance().closePreparedStatement(statementSQL);
         statementSQL = null;
         
@@ -250,11 +297,13 @@ public class Book implements IBook{
     public IPublisher getPublisher() throws NotFound{
         
         ResultSet data = dbBookGetter();
+        IPublisher publisher = null;
+        
         try{
             if(data.next()){
                 //This can also throw NotFound
                 try{
-                    return new Publisher(data.getInt("Publisher_id"));
+                    publisher = new Publisher(data.getInt("Publisher_id"));
                 } catch(NotFound ex){
                     return getPublisher();
                 }
@@ -264,20 +313,27 @@ public class Book implements IBook{
         } catch (SQLException ex){
             errorHandler.report("Book Class", ex.getMessage());
             errorHandler.terminate();
-            return null;
+        } finally {
+            //Close && nullify the statement
+            if(statementSQL != null){
+                MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+                statementSQL = null;
+            }
         }
-
+        
+        return publisher;
     }
 
     private boolean dbBookUpdater(String dbName, String colName, String newData) throws NotFound{
 
         //update the entry
-        String sqlQuery = "UPDATE " + dbName + " SET " + colName + " = ?";
+        String sqlQuery = "UPDATE " + dbName + " SET " + colName + " = ? WHERE Book_id = ?";
         statementSQL = MysqlHandler.getInstance().getPreparedStatementWithKeys(sqlQuery);
         
         try {
         
             statementSQL.setString(1, newData);
+            statementSQL.setInt(2, bookId);
             int rows = statementSQL.executeUpdate();
 
 	    if(rows == 0){
@@ -287,23 +343,26 @@ public class Book implements IBook{
         } catch (SQLException ex) {
             errorHandler.report("Author Class", ex.getMessage());
             return false;
+        } finally {
+            //Null the selectorStatemen
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null;  
         }
-        
-        //Null the statementSQL
-        MysqlHandler.getInstance().closePreparedStatement(statementSQL);
-        statementSQL = null;
+
         return true;
     }
     
     private boolean dbBookUpdater(String dbName, String colName, int newData) throws NotFound{
      
         //update the entry
-        String sqlQuery = "UPDATE " + dbName + " SET " + colName + " = ?";
+        String sqlQuery = "UPDATE " + dbName + " SET " + colName + " = ? WHERE Book_id = ?";
         statementSQL = MysqlHandler.getInstance().getPreparedStatementWithKeys(sqlQuery);
         
         try {
         
             statementSQL.setInt(1, newData);
+            statementSQL.setInt(2, bookId);
+
             int rows = statementSQL.executeUpdate();
 
 	    if(rows == 0){
@@ -313,23 +372,26 @@ public class Book implements IBook{
         } catch (SQLException ex) {
             errorHandler.report("Author Class", ex.getMessage());
             return false;
+        } finally {
+            //Null the selectorStatemen
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null;  
         }
-        
-        //Null the selectorStatemen
-        MysqlHandler.getInstance().closePreparedStatement(statementSQL);
-        statementSQL = null;
+
         return true;
     }
     
     private boolean dbBookUpdater(String dbName, String colName, double newData) throws NotFound{
 
         //update the entry
-        String sqlQuery = "UPDATE " + dbName + " SET " + colName + " = ?";
+        String sqlQuery = "UPDATE " + dbName + " SET " + colName + " = ? WHERE Book_id = ?";
         statementSQL = MysqlHandler.getInstance().getPreparedStatementWithKeys(sqlQuery);
         
         try {
         
             statementSQL.setDouble(1, newData);
+            statementSQL.setInt(2, bookId);
+            
             int rows = statementSQL.executeUpdate();
 
 	    if(rows == 0){
@@ -339,11 +401,12 @@ public class Book implements IBook{
         } catch (SQLException ex) {
             errorHandler.report("Author Class", ex.getMessage());
             return false;
+        } finally {
+            //Null the selectorStatemen
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null;  
         }
-        
-        //Null the selectorStatemen
-        MysqlHandler.getInstance().closePreparedStatement(statementSQL);
-        statementSQL = null;
+
         return true;
     }
     
@@ -394,15 +457,6 @@ public class Book implements IBook{
         }
         
         return dbBookUpdater("Books_ISBNs","Threshold",newThreshold);
-    }
-
-    @Override
-    public boolean setQuantityToBeOrdered(int newQuantityToBeOrdered) throws NotFound{
-        if(newQuantityToBeOrdered < 0){
-            return false;
-        }
-        
-        return dbBookUpdater("Books_ISBNs","QuantityToBeOrdered",newQuantityToBeOrdered);
     }
 
     @Override

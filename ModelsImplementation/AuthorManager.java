@@ -4,14 +4,12 @@ import HelperClasses.NotFound;
 import HelperClasses.ErrorHandler;
 import ModelsInterfaces.IAuthor;
 import ModelsInterfaces.IAuthorManager;
-import ModelsInterfaces.IBook;
 import Mysql.MysqlHandler;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  *
@@ -19,10 +17,11 @@ import java.util.logging.Logger;
  */
 public class AuthorManager implements IAuthorManager{
 
-    private ErrorHandler errorHandler;
+    private final ErrorHandler errorHandler;
     private PreparedStatement selectorStatement;
     
     AuthorManager(){
+        //set the data
         errorHandler = new ErrorHandler();
         selectorStatement = null;
     }
@@ -44,7 +43,7 @@ public class AuthorManager implements IAuthorManager{
         
         ArrayList<IAuthor> authorsList = new ArrayList<>();
         
-        String sqlQuery = "SELECT DESTINCT `Author_Name` FROM `Authors`";
+        String sqlQuery = "SELECT DISTINCT `Author_Name` FROM `Authors`";
         selectorStatement = MysqlHandler.getInstance().getPreparedStatement(sqlQuery);
         
         try {
@@ -71,7 +70,7 @@ public class AuthorManager implements IAuthorManager{
             errorHandler.terminate();
         }
         
-        //Null the selectorStatemen
+        //Close && nullify the selectorStatement
         MysqlHandler.getInstance().closePreparedStatement(selectorStatement);
         selectorStatement = null;
     
@@ -80,11 +79,9 @@ public class AuthorManager implements IAuthorManager{
     
     @Override
     public void finalize(){
-
         if(selectorStatement != null){
             MysqlHandler.getInstance().closePreparedStatement(selectorStatement);
         }
         
     }
-    
 }

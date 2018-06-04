@@ -18,7 +18,11 @@ public class PublisherManager implements IPublisherManager{
 
     //Mysql handler
     private PreparedStatement statementSQL;
-    private ErrorHandler errorHandler;
+    private final ErrorHandler errorHandler;
+    
+    PublisherManager(){
+        errorHandler = new ErrorHandler();
+    }
     
     @Override
     public IPublisher getById(int id) {
@@ -43,11 +47,11 @@ public class PublisherManager implements IPublisherManager{
         } catch (SQLException ex) {
             errorHandler.report("Publisher manager Class", ex.getMessage());
             errorHandler.terminate();
+        } finally {
+            //Close && nullify the statement
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null;
         }
-        
-        //Null the selectorStatement
-        MysqlHandler.getInstance().closePreparedStatement(statementSQL);
-        statementSQL = null;
         
         return null;
     }
@@ -77,11 +81,11 @@ public class PublisherManager implements IPublisherManager{
         } catch (SQLException ex) {
             errorHandler.report("Publisher manager Class", ex.getMessage());
             errorHandler.terminate();
+        } finally {
+            //Close && nullify the statement
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null;
         }
-        
-        //Null the selectorStatement
-        MysqlHandler.getInstance().closePreparedStatement(statementSQL);
-        statementSQL = null;
         
         return publishersToReturn;
     }
@@ -108,11 +112,11 @@ public class PublisherManager implements IPublisherManager{
         } catch (SQLException ex) {
             errorHandler.report("Publisher manager Class", ex.getMessage());
             errorHandler.terminate();
+        } finally {
+            //Close && nullify the statement
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null;
         }
-        
-        //Null the selectorStatement
-        MysqlHandler.getInstance().closePreparedStatement(statementSQL);
-        statementSQL = null;
         
         return publishersToReturn;
     }
@@ -120,7 +124,7 @@ public class PublisherManager implements IPublisherManager{
     @Override
     public IPublisher addPublisher(String name, String address, String telephone) {
 
-        String sqlQuery = " INTSET INTO `Publishers` " +
+        String sqlQuery = " INSERT INTO `Publishers` " +
                 " (Publisher_Name,Publisher_Address,Publisher_Telephone) " + 
                 " Values (?,?,?) ";
         
@@ -139,19 +143,18 @@ public class PublisherManager implements IPublisherManager{
             //if inserted successfully, create object and return it
             if(data.next()){
                 try{
-                    return new Publisher(data.getInt("Publisher_id"));
+                    return new Publisher(data.getInt(1));
                 } catch (NotFound ex){}
             }
             
         } catch (SQLException ex) {
             errorHandler.report("Publisher manager Class", ex.getMessage());
+        } finally {
+            //Close && nullify the statement
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null;
         }
-        
-        //Null the selectorStatement
-        MysqlHandler.getInstance().closePreparedStatement(statementSQL);
-        statementSQL = null;
         
         return null;
     }
-    
 }

@@ -30,22 +30,22 @@ public class BooksGetter implements IBooksGetter{
     
     //Mysql handler
     private PreparedStatement statementSQL;
-    private ErrorHandler errorHandler;
-
+    private final ErrorHandler errorHandler;
     
+    BooksGetter(){
+        errorHandler = new ErrorHandler();
+        columnsNames = new ArrayList<>();
+        intArguments = new ArrayList<>();
+        doubleArguments = new ArrayList<>();
+        stringArguments = new ArrayList<>();
+        invalid = false;
+    }
+
     void reset(){
         columnsNames.clear();
         intArguments.clear();
         doubleArguments.clear();
         stringArguments.clear();
-        invalid = false;
-    }
-    
-    BooksGetter(){
-        columnsNames = new ArrayList<>();
-        intArguments = new ArrayList<>();
-        doubleArguments = new ArrayList<>();
-        stringArguments = new ArrayList<>();
         invalid = false;
     }
     
@@ -126,16 +126,16 @@ public class BooksGetter implements IBooksGetter{
             if(i != 0){
                 condition += " AND ";
             }
-            
+
             if(columnsNames.get(i).equals("Books_ISBNs.Publication_Year")){
-                condition += columnsNames.get(i) + " > ? ";
+                condition += columnsNames.get(i) + " >= ? ";
                 condition += " AND ";
-                condition += columnsNames.get(i) + " < ? ";
+                condition += columnsNames.get(i) + " <= ? ";
             }
             else if(columnsNames.get(i).equals("Books_ISBNs.Selling_price")){
-                condition += columnsNames.get(i) + " > ? ";
+                condition += columnsNames.get(i) + " >= ? ";
                 condition += " AND ";
-                condition += columnsNames.get(i) + " < ? ";
+                condition += columnsNames.get(i) + " <= ? ";
             }
             else{
                 condition += columnsNames.get(i) + " = ? ";
@@ -155,35 +155,36 @@ public class BooksGetter implements IBooksGetter{
         int intPointer = 0;
         int stringPointer = 0;
         int doublePointer = 0;
+        int argPointer = 1;
         
         for(int i=0;i<columnsNames.size();i++){
 
             switch (columnsNames.get(i)) {
                 case "Books_ISBNs.Publication_Year":
-                    statementSQL.setInt(i+1,intArguments.get(intPointer++));
-                    statementSQL.setInt(i+1,intArguments.get(intPointer++));
+                    statementSQL.setInt(argPointer++,intArguments.get(intPointer++));
+                    statementSQL.setInt(argPointer++,intArguments.get(intPointer++));
                     break;
                 case "Books_ISBNs.Selling_price":
-                    statementSQL.setDouble(i+1,doubleArguments.get(doublePointer++));
-                    statementSQL.setDouble(i+1,doubleArguments.get(doublePointer++));
+                    statementSQL.setDouble(argPointer++,doubleArguments.get(doublePointer++));
+                    statementSQL.setDouble(argPointer++,doubleArguments.get(doublePointer++));
                     break;
                 case "books.Title":
-                    statementSQL.setString(i+1,stringArguments.get(stringPointer++));
+                    statementSQL.setString(argPointer++,stringArguments.get(stringPointer++));
                     break;
                 case "books.category_id":
-                    statementSQL.setInt(i+1,intArguments.get(intPointer++));
+                    statementSQL.setInt(argPointer++,intArguments.get(intPointer++));
                     break;
                 case "Authors.Author_Name":
-                    statementSQL.setString(i+1,stringArguments.get(stringPointer++));
+                    statementSQL.setString(argPointer++,stringArguments.get(stringPointer++));
                     break;
                 case "Books_ISBNs.ISBN":
-                    statementSQL.setString(i+1,stringArguments.get(stringPointer++));
+                    statementSQL.setString(argPointer++,stringArguments.get(stringPointer++));
                     break;
                 case "books.Book_id":
-                    statementSQL.setInt(i+1,intArguments.get(intPointer++));
+                    statementSQL.setInt(argPointer++,intArguments.get(intPointer++));
                     break;
                 case "Books_ISBNs.Publisher_id":
-                    statementSQL.setInt(i+1,intArguments.get(intPointer++));
+                    statementSQL.setInt(argPointer++,intArguments.get(intPointer++));
                     break;
                 default:
                     break;
@@ -195,8 +196,9 @@ public class BooksGetter implements IBooksGetter{
 
     @Override
     public int booksCount() {
+        int val =  get().size();
         reset();
-        return get().size();
+        return val;
     }
 
     @Override
@@ -208,7 +210,7 @@ public class BooksGetter implements IBooksGetter{
                 " ON `Books_ISBNs`.`Book_id` = `books`.`Book_id` " +
                 " INNER JOIN Authors ON `Authors`.`Book_id` = `books`.`Book_id` " +
                 " WHERE " + getCondition();
-        
+
         statementSQL = MysqlHandler.getInstance().getPreparedStatement(sqlQuery);
         
         try {
@@ -234,7 +236,7 @@ public class BooksGetter implements IBooksGetter{
             }
             
         } catch (SQLException ex) {
-            errorHandler.report("Author Class", ex.getMessage());
+            errorHandler.report("BooksGetter Class", ex.getMessage());
             errorHandler.terminate();
         }
         

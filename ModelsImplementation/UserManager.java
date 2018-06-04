@@ -20,8 +20,12 @@ public class UserManager implements IUserManager{
     //Mysql handler
     private PreparedStatement statementSQL;
     //Error handler
-    private ErrorHandler errorHandler;
+    private final ErrorHandler errorHandler;
 
+    UserManager(){
+        errorHandler = new ErrorHandler();
+    }
+    
     @Override
     public IUser getById(int id) {
         try{
@@ -55,11 +59,11 @@ public class UserManager implements IUserManager{
         } catch (SQLException ex) {
             errorHandler.report("User Manager Class", ex.getMessage());
             errorHandler.terminate();
+        } finally {
+            //Close && nullify the statement
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null;
         }
-        
-        //Null the selectorStatement
-        MysqlHandler.getInstance().closePreparedStatement(statementSQL);
-        statementSQL = null;
         
         return users;
     }
@@ -86,11 +90,11 @@ public class UserManager implements IUserManager{
         } catch (SQLException ex) {
             errorHandler.report("User Manager Class", ex.getMessage());
             errorHandler.terminate();
+        } finally {
+            //Close && nullify the statement
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null;
         }
-        
-        //Null the selectorStatement
-        MysqlHandler.getInstance().closePreparedStatement(statementSQL);
-        statementSQL = null;
         
         return null;
     }
@@ -143,18 +147,18 @@ public class UserManager implements IUserManager{
         } catch (SQLException ex) {
             errorHandler.report("User Manager Class", ex.getMessage());
             errorHandler.terminate();
+        } finally {
+            //Close && nullify the statement
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null;
         }
-        
-        //Null the selectorStatement
-        MysqlHandler.getInstance().closePreparedStatement(statementSQL);
-        statementSQL = null;
         
         return users;
     }
 
     @Override
     public IUser addUser(String username, String email, String password, String fname,
-            String lname, String sefaultShippingAddress, String phoneNumber, IUserStatus status) {
+            String lname, String defaultShippingAddress, String phoneNumber, IUserStatus status) {
         
         
         //try to get the status_id
@@ -168,7 +172,7 @@ public class UserManager implements IUserManager{
         //hasher
         SHA256 hasher = new SHA256();
         
-        String sqlQuery = " INTSET INTO `Users` " +
+        String sqlQuery = " INSERT INTO `Users` " +
         " (User_Name,Password,First_Name,last_Name,Email,Phone_Number,Status_id,Default_Shipping_Address) " + 
         " Values (?,?,?,?,?,?,?,?) ";
         
@@ -176,7 +180,7 @@ public class UserManager implements IUserManager{
         ResultSet data = null;
         
         try{
-            
+
             statementSQL.setString(1, username);
             statementSQL.setString(2, hasher.hash(password));
             statementSQL.setString(3, fname);
@@ -184,7 +188,7 @@ public class UserManager implements IUserManager{
             statementSQL.setString(5, email);
             statementSQL.setString(6, phoneNumber);
             statementSQL.setInt(7, statusId);
-            statementSQL.setString(8, sefaultShippingAddress);
+            statementSQL.setString(8, defaultShippingAddress);
             
             statementSQL.executeUpdate();
             data = statementSQL.getGeneratedKeys();
@@ -192,17 +196,17 @@ public class UserManager implements IUserManager{
             //if inserted successfully, create object and return it
             if(data.next()){
                 try{
-                    return new User(data.getInt("User_id"));
+                    return new User(data.getInt(1));
                 } catch (NotFound ex){}
             }
             
         } catch (SQLException ex) {
             errorHandler.report("User Manager Class", ex.getMessage());
+        } finally {
+            //Close && nullify the statement
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null;
         }
-        
-        //Null the SQLStatement
-        MysqlHandler.getInstance().closePreparedStatement(statementSQL);
-        statementSQL = null;
         
         return null;
     }

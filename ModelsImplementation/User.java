@@ -25,10 +25,11 @@ public class User implements IUser{
     //Mysql handler
     private PreparedStatement statementSQL;
     //Error handler
-    private ErrorHandler errorHandler;
-    private int userId;
+    private final ErrorHandler errorHandler;
+    private final int userId;
     
     public User(int userId) throws NotFound{
+        errorHandler = new ErrorHandler();
         //set the data
         this.userId = userId;
         //vlidate the id
@@ -52,10 +53,6 @@ public class User implements IUser{
             errorHandler.terminate();
         }
         
-        //Null the selectorStatement
-        MysqlHandler.getInstance().closePreparedStatement(statementSQL);
-        statementSQL = null;
-        
         return data;
     }
     
@@ -72,6 +69,10 @@ public class User implements IUser{
             errorHandler.report("User Class", ex.getMessage());
             errorHandler.terminate();
             return -1;
+        } finally {
+            //Close && nullify the statement
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null;
         }
     }
 
@@ -88,6 +89,10 @@ public class User implements IUser{
             errorHandler.report("User Class", ex.getMessage());
             errorHandler.terminate();
             return "";
+        } finally {
+            //Close && nullify the statement
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null;
         }
     }
 
@@ -104,6 +109,10 @@ public class User implements IUser{
             errorHandler.report("User Class", ex.getMessage());
             errorHandler.terminate();
             return "";
+        } finally {
+            //Close && nullify the statement
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null;
         }
     }
 
@@ -120,6 +129,10 @@ public class User implements IUser{
             errorHandler.report("User Class", ex.getMessage());
             errorHandler.terminate();
             return "";
+        } finally {
+            //Close && nullify the statement
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null;
         }
     }
 
@@ -136,6 +149,10 @@ public class User implements IUser{
             errorHandler.report("User Class", ex.getMessage());
             errorHandler.terminate();
             return "";
+        } finally {
+            //Close && nullify the statement
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null;
         }
     }
 
@@ -152,6 +169,10 @@ public class User implements IUser{
             errorHandler.report("User Class", ex.getMessage());
             errorHandler.terminate();
             return null;
+        } finally {
+            //Close && nullify the statement
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null;
         }
     }
 
@@ -168,6 +189,10 @@ public class User implements IUser{
             errorHandler.report("User Class", ex.getMessage());
             errorHandler.terminate();
             return "";
+        } finally {
+            //Close && nullify the statement
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null;
         }
     }
 
@@ -189,6 +214,10 @@ public class User implements IUser{
             errorHandler.report("User Class", ex.getMessage());
             errorHandler.terminate();
             return false;
+        } finally {
+            //Close && nullify the statement
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null;
         }
         
         //hasher
@@ -216,23 +245,25 @@ public class User implements IUser{
         } catch (SQLException ex) {
             errorHandler.report("User Class", ex.getMessage());
             return false;
+        } finally {
+            //Close && nullify the statement
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null;
         }
         
-        //Null the selectorStatement
-        MysqlHandler.getInstance().closePreparedStatement(statementSQL);
-        statementSQL = null;
         return true;
     }
     
     private boolean dbUserUpdater( String colName, int newData) throws NotFound{
      
         //update the entry
-        String sqlQuery = "UPDATE `Users` SET " + colName + " = ?";
+        String sqlQuery = "UPDATE `Users` SET " + colName + " = ? WHERE User_id = ?";
         statementSQL = MysqlHandler.getInstance().getPreparedStatementWithKeys(sqlQuery);
         
         try {
         
             statementSQL.setInt(1, newData);
+            statementSQL.setInt(2, userId);
             int rows = statementSQL.executeUpdate();
 
 	    if(rows == 0){
@@ -242,17 +273,18 @@ public class User implements IUser{
         } catch (SQLException ex) {
             errorHandler.report("User Class", ex.getMessage());
             return false;
+        } finally {
+            //Close && nullify the statement
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null;
         }
         
-        //Null the selectorStatement
-        MysqlHandler.getInstance().closePreparedStatement(statementSQL);
-        statementSQL = null;
         return true;
     }
 
     @Override
     public ArrayList<IOrder> getOrders() throws NotFound {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new OrderManager().getOrders().getOrdersByUser(this).get();
     }
 
     @Override
@@ -349,6 +381,10 @@ public class User implements IUser{
             errorHandler.report("User Class", ex.getMessage());
             errorHandler.terminate();
             return "";
+        } finally {
+            //Close && nullify the statement
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null;
         }
     }
 

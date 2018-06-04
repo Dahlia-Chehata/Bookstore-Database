@@ -20,8 +20,12 @@ import java.util.ArrayList;
  */
 public class BookManager implements IBookManager{
 
-    private ErrorHandler errorHandler;
+    private final ErrorHandler errorHandler;
     private PreparedStatement statement;
+    
+    BookManager(){
+        errorHandler = new ErrorHandler();
+    }
     
     @Override
     public IBooksGetter getBooks() {
@@ -29,7 +33,7 @@ public class BookManager implements IBookManager{
     }
 
     @Override
-    public IBook addBook(String title, ICategory category, String ISBN, IPublisher publisher, int publicationYear, double price, int availableQuantity, int threshold, int quantityToBeOrderd, ArrayList<IAuthor> authors) {
+    public IBook addBook(String title, ICategory category, String ISBN, IPublisher publisher, int publicationYear, double price, int availableQuantity, int threshold, ArrayList<IAuthor> authors) {
         
         int categoryId;
         int publisherId;
@@ -62,23 +66,27 @@ public class BookManager implements IBookManager{
             statement.executeUpdate();
         } catch (SQLException ex) {
             errorHandler.report("Book Manager Class", ex.getMessage());
-            errorHandler.terminate();
+            //close the opened connection
+            MysqlHandler.getInstance().closeConnection(conn);
+            return null;
         }
         
         //Set the id of the book
         try {
             String sqlQuery = "SET @KEY = ( select LAST_INSERT_ID() ) ;";
-            statement = conn.prepareStatement(sqlQuery,PreparedStatement.RETURN_GENERATED_KEYS);
-            statement.executeUpdate();
+            statement = conn.prepareStatement(sqlQuery);
+            statement.execute();
         } catch (SQLException ex) {
             errorHandler.report("Book Manager Class", ex.getMessage());
-            errorHandler.terminate();
+            //close the opened connection
+            MysqlHandler.getInstance().closeConnection(conn);
+            return null;
         }
         
         //add the entry into Books_ISBNs relation
         try {
             String sqlQuery = "INSERT INTO `Books_ISBNs` " +
-            "(`ISBN`,`Book_id`,`Publisher_id`,`Publication_Year`,`Selling_price`,`Available_Quantity`,`Threshold`) VALUES (?,@key,?,?,?,?,?);";
+            " (`ISBN`,`Book_id`,`Publisher_id`,`Publication_Year`,`Selling_price`,`Available_Quantity`,`Threshold`) VALUES (?,@key,?,?,?,?,?);";
             
             statement = conn.prepareStatement(sqlQuery);
             
@@ -92,7 +100,9 @@ public class BookManager implements IBookManager{
             statement.executeUpdate();
         } catch (SQLException ex) {
             errorHandler.report("Book Manager Class", ex.getMessage());
-            errorHandler.terminate();
+            //close the opened connection
+            MysqlHandler.getInstance().closeConnection(conn);
+            return null;
         }
 
         //add the authors.
@@ -109,7 +119,9 @@ public class BookManager implements IBookManager{
             
         } catch (SQLException ex) {
             errorHandler.report("Book Manager Class", ex.getMessage());
-            errorHandler.terminate();
+            //close the opened connection
+            MysqlHandler.getInstance().closeConnection(conn);
+            return null;
         }
         
         
@@ -117,7 +129,8 @@ public class BookManager implements IBookManager{
         try {            
             conn.commit();
         } catch (SQLException ex) {
-            errorHandler.report("Author Class", ex.getMessage());
+            errorHandler.report("Book Manager Class", ex.getMessage());
+            //close the opened connection
             MysqlHandler.getInstance().closeConnection(conn);
             return null;
         }
@@ -139,5 +152,4 @@ public class BookManager implements IBookManager{
     public ArrayList<IBook> getTop(int numOfBooks, String startingDate, String endingDate) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
 }

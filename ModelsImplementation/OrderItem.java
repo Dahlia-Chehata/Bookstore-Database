@@ -2,7 +2,8 @@ package ModelsImplementation;
 
 import HelperClasses.ErrorHandler;
 import HelperClasses.NotFound;
-import ModelsInterfaces.IUserStatus;
+import ModelsInterfaces.IBook;
+import ModelsInterfaces.IOrderItem;
 import Mysql.MysqlHandler;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,36 +13,42 @@ import java.sql.SQLException;
  *
  * @author Fares
  */
-public class UserStatus implements IUserStatus{
+public class OrderItem implements IOrderItem{
 
     //Mysql handler
     private PreparedStatement statementSQL;
     //Error handler
     private final ErrorHandler errorHandler;
-    private final int statusId;
     
-    public UserStatus(int statusId) throws NotFound{
+    private final int orderId;
+    private final String ISBN;
+    
+    public OrderItem(int orderId, String ISBN) throws NotFound{
+        
         errorHandler = new ErrorHandler();
-        //set the id
-        this.statusId = statusId;
-        //vlidate the id
-        getId();
+        this.orderId = orderId;
+        this.ISBN = ISBN;
+        
+        getQuantity();
     }
     
-    private ResultSet dbUserStatusGetter() throws NotFound{
+    private ResultSet dbOrderGetter() throws NotFound{
         
-        String sqlQuery = " SELECT * FROM `Status_Menu` " + 
-                " WHERE `Status_Menu`.`Status_id` = ?";
+        String sqlQuery = " SELECT * FROM `purchases` " + 
+                " WHERE `purchases`.`Order_id` = ? AND `purchases`.`ISBN` = ?";
         
         statementSQL = MysqlHandler.getInstance().getPreparedStatement(sqlQuery);
         ResultSet data = null;
         
         try{
-            statementSQL.setInt(1,statusId);
+            
+            statementSQL.setInt(1,orderId);
+            statementSQL.setString(2,ISBN);
+            
             statementSQL.execute();
             data = statementSQL.getResultSet();
         } catch (SQLException ex) {
-            errorHandler.report("Publisher Class", ex.getMessage());
+            errorHandler.report("Order Item Class", ex.getMessage());
             errorHandler.terminate();
         }
         
@@ -49,16 +56,16 @@ public class UserStatus implements IUserStatus{
     }
     
     @Override
-    public int getId() throws NotFound {
-        ResultSet data = dbUserStatusGetter();
+    public int getQuantity() throws NotFound {
+        ResultSet data = dbOrderGetter();
         try{
             if(data.next()){
-                return data.getInt("Status_id");
+                return data.getInt("no_of_copies");
             }else{
                 throw new NotFound();
             }
         } catch (SQLException ex){
-            errorHandler.report("Publisher Class", ex.getMessage());
+            errorHandler.report("Order Item Class", ex.getMessage());
             errorHandler.terminate();
             return -1;
         } finally {
@@ -69,18 +76,18 @@ public class UserStatus implements IUserStatus{
     }
 
     @Override
-    public String getName() throws NotFound {
-        ResultSet data = dbUserStatusGetter();
+    public double getTotalPrice() throws NotFound {
+        ResultSet data = dbOrderGetter();
         try{
             if(data.next()){
-                return data.getString("Permission");
+                return data.getDouble("TotalPrice");
             }else{
                 throw new NotFound();
             }
         } catch (SQLException ex){
-            errorHandler.report("UserStatus Class", ex.getMessage());
+            errorHandler.report("Order Class", ex.getMessage());
             errorHandler.terminate();
-            return "";
+            return -1;
         } finally {
             //Close && nullify the statement
             MysqlHandler.getInstance().closePreparedStatement(statementSQL);
@@ -89,35 +96,28 @@ public class UserStatus implements IUserStatus{
     }
 
     @Override
-    public boolean changeName(String newName) throws NotFound {
-     
-        //update the entry
-        String sqlQuery = "UPDATE Status_Menu SET Permission = ? WHERE Status_id = ?";
-        statementSQL = MysqlHandler.getInstance().getPreparedStatement(sqlQuery);
-        
-        try {
-        
-            statementSQL.setString(1, newName);
-            statementSQL.setInt(2, statusId);
-            int rows = statementSQL.executeUpdate();
+    public IBook getBook() throws NotFound {
+        ResultSet data = dbOrderGetter();
+        try{
+            if(data.next()){
+                try{
+                    return new Book(data.getString("ISBN"));
+                } catch (NotFound ex){
+                    return this.getBook();
+                }
             
-            //no row changed
-	    if(rows == 0){
+            }else{
                 throw new NotFound();
             }
-	    
-        } catch (SQLException ex) {
-            errorHandler.report("UserStatus Class", ex.getMessage());
-            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
-            statementSQL = null;
-            return false;
+        } catch (SQLException ex){
+            errorHandler.report("Order Class", ex.getMessage());
+            errorHandler.terminate();
+            return null;
         } finally {
             //Close && nullify the statement
             MysqlHandler.getInstance().closePreparedStatement(statementSQL);
             statementSQL = null;
         }
-        
-        return true;
     }
     
 }

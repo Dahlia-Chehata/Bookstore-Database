@@ -18,7 +18,11 @@ public class CategoryManager implements ICategoryManager{
 
     //Mysql handler
     private PreparedStatement statementSQL;
-    private ErrorHandler errorHandler;
+    private final ErrorHandler errorHandler;
+    
+    CategoryManager(){
+        errorHandler = new ErrorHandler();
+    }
     
     @Override
     public ICategory getCategoryByName(String categoryName) {
@@ -51,12 +55,12 @@ public class CategoryManager implements ICategoryManager{
         } catch (SQLException ex) {
             errorHandler.report("Category Manager Class", ex.getMessage());
             errorHandler.terminate();
+        } finally {
+            //Null the selectorStatemen
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null; 
         }
-        
-        //Null the selectorStatemen
-        MysqlHandler.getInstance().closePreparedStatement(statementSQL);
-        statementSQL = null;
-        
+
         //will never reach this statement
         return null;
     }
@@ -98,13 +102,12 @@ public class CategoryManager implements ICategoryManager{
         } catch (SQLException ex) {
             errorHandler.report("Category Manager Class", ex.getMessage());
             errorHandler.terminate();
+        } finally {
+            //Null the statement
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null;
         }
-        
-        //Null the selectorStatemen
-        MysqlHandler.getInstance().closePreparedStatement(statementSQL);
-        statementSQL = null;
-        
-        //will never reach this statement
+
         return toReturn;
     }
 
@@ -121,22 +124,22 @@ public class CategoryManager implements ICategoryManager{
         
         //update the entry
         String sqlQuery = "DELETE Categories WHERE category_id = ?";
-        statementSQL = MysqlHandler.getInstance().getPreparedStatement(sqlQuery);
         
         try {
-        
+            
+            statementSQL = MysqlHandler.getInstance().getPreparedStatement(sqlQuery);
             statementSQL.setInt(1, categoryId);
             statementSQL.executeUpdate();
 	    
         } catch (SQLException ex) {
             errorHandler.report("Category Manager Class", ex.getMessage());
             return false;
+        } finally {
+            //Null the statementSQL
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null;
         }
-        
-        //Null the statementSQL
-        MysqlHandler.getInstance().closePreparedStatement(statementSQL);
-        statementSQL = null;
-        
+
         return true;
     }
 
@@ -158,18 +161,17 @@ public class CategoryManager implements ICategoryManager{
                 return null;
             }
             
-            categoryId = key.getInt("category_id");
+            categoryId = key.getInt(1);
             
         } catch (SQLException ex) {
             errorHandler.report("Category Manager Class", ex.getMessage());
             return null;
+        } finally {
+            //Null the statementSQL
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null;
         }
-        
-        //Null the statementSQL
-        MysqlHandler.getInstance().closePreparedStatement(statementSQL);
-        statementSQL = null;
-        
+
         return this.getCategoryById(categoryId);
     }
-    
 }

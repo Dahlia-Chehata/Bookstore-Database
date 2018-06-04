@@ -9,8 +9,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**
@@ -19,20 +17,15 @@ import java.util.logging.Logger;
  */
 public class Author implements IAuthor{
 
-    private String authorName;
+    private final String authorName;
     private PreparedStatement statement;
-    private ErrorHandler errorHandler;
+    private final ErrorHandler errorHandler;
         
     public Author(String autorName) throws NotFound{
-        
-        errorHandler = new ErrorHandler();
-        
-        //Null the statements
-        statement = null;
-
-        //set the autho name
+        //set the data
         this.authorName = autorName;
-        
+        statement = null;
+        errorHandler = new ErrorHandler();
     }
     
     @Override
@@ -69,7 +62,7 @@ public class Author implements IAuthor{
             errorHandler.terminate();
         }
         
-        //Null the selectorStatement
+        //Close && nullify the statement
         MysqlHandler.getInstance().closePreparedStatement(statement);
         statement = null;
         
@@ -79,24 +72,22 @@ public class Author implements IAuthor{
     @Override
     public boolean removeBook(IBook bookToBeRemoved){
         
+        //get the book id
+        int bookId;
+        //if book not found that mean already the book is deleted
+        try{
+            bookId = bookToBeRemoved.getID();
+        } catch(NotFound ex){
+            return true;
+        }
+        
         //remove the entry
-        String sqlQuery = "DELETE `Authors` WHERE `Author_Name` = ? AND `Book_id` = ?";
+        String sqlQuery = "DELETE FROM `Authors` WHERE `Author_Name` = ? AND `Book_id` = ?";
         statement = MysqlHandler.getInstance().getPreparedStatement(sqlQuery);
         
         try {
         
             statement.setString(1, this.authorName);
-            
-            //get the book id
-            int bookId;
-            
-            //if book not found that mean already the book is deleted
-            try{
-                bookId = bookToBeRemoved.getID();
-            } catch(NotFound ex){
-                return true;
-            }
-            
             statement.setInt(2, bookId);
             statement.executeUpdate();
 
@@ -105,7 +96,7 @@ public class Author implements IAuthor{
             errorHandler.terminate();
         }
         
-        //Null the statement
+        //Close && nullify the statement
         MysqlHandler.getInstance().closePreparedStatement(statement);
         statement = null;
         
@@ -123,8 +114,9 @@ public class Author implements IAuthor{
 
     @Override
     public boolean addBook(IBook bookToBeAdded) {
+        
         //add the entry
-        String sqlQuery = "INSERT INTO  `Authors` (`Book_id`,`Author_Name`) VALUES (?,?)";
+        String sqlQuery = "INSERT INTO `Authors` (`Book_id`,`Author_Name`) VALUES (?,?)";
         statement = MysqlHandler.getInstance().getPreparedStatement(sqlQuery);
         
         try {
@@ -144,11 +136,12 @@ public class Author implements IAuthor{
         } catch (SQLException ex) {
             errorHandler.report("Author Class", ex.getMessage());
             return false;
+        } finally {
+            //Close && nullify the statement
+            MysqlHandler.getInstance().closePreparedStatement(statement);
+            statement = null;
         }
         
-        //Null the statement
-        MysqlHandler.getInstance().closePreparedStatement(statement);
-        statement = null;
         return true;
     }
 }

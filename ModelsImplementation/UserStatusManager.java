@@ -19,8 +19,12 @@ public class UserStatusManager implements IUserStatusManager{
     //Mysql handler
     private PreparedStatement statementSQL;
     //Error handler
-    private ErrorHandler errorHandler;
+    private final ErrorHandler errorHandler;
 
+    UserStatusManager(){
+        errorHandler = new ErrorHandler();
+    }
+    
     @Override
     public ArrayList<IUserStatus> getAllUserStatuses() {
 
@@ -38,18 +42,18 @@ public class UserStatusManager implements IUserStatusManager{
             //Try to add the status to the ArrayList
             while(data.next()){
                 try{
-                    statusesToBeReturned.add(new UserStatus(data.getInt("Publisher_id")));
+                    statusesToBeReturned.add(new UserStatus(data.getInt("Status_id")));
                 }catch(NotFound ex){}
             }
             
         } catch (SQLException ex) {
             errorHandler.report("UserStatus Manager Class", ex.getMessage());
             errorHandler.terminate();
+        } finally {
+            //Close && nullify the statement
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null;
         }
-        
-        //Null the selectorStatement
-        MysqlHandler.getInstance().closePreparedStatement(statementSQL);
-        statementSQL = null;
                
         return statusesToBeReturned;
     }
@@ -66,9 +70,9 @@ public class UserStatusManager implements IUserStatusManager{
     @Override
     public IUserStatus addStatus(String newUserStatus) {
         
-        String sqlQuery = " INTSET INTO `Status_Menu` " +
+        String sqlQuery = " INSERT INTO `Status_Menu` " +
                 " (Permission) " + 
-                " Values (?) ";
+                " VALUES (?);";
         
         statementSQL = MysqlHandler.getInstance().getPreparedStatementWithKeys(sqlQuery);
         ResultSet data = null;
@@ -83,20 +87,18 @@ public class UserStatusManager implements IUserStatusManager{
             //if inserted successfully, create object and return it
             if(data.next()){
                 try{
-                    return new UserStatus(data.getInt("Status_id"));
+                    return new UserStatus(data.getInt(1));
                 } catch (NotFound ex){}
             }
             
         } catch (SQLException ex) {
             errorHandler.report("UserStatus Manager Class", ex.getMessage());
+        } finally {
+            //Close && nullify the statement
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null;
         }
-        
-        //Null the selectorStatement
-        MysqlHandler.getInstance().closePreparedStatement(statementSQL);
-        statementSQL = null;
         
         return null;
     }
-
-    
 }

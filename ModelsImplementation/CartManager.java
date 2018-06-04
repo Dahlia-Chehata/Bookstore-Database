@@ -7,6 +7,8 @@ import ModelsInterfaces.ICartManager;
 import ModelsInterfaces.IUser;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.util.Pair;
 
 /**
@@ -16,19 +18,25 @@ import javafx.util.Pair;
 public class CartManager implements ICartManager{
 
     //Error handler
-    private ErrorHandler errorHandler;
+    private ErrorHandler errorHandler = new ErrorHandler();
     
     ///Data storage
-    HashMap<IUser,ArrayList<Pair<IBook, Integer>>> data;
+    HashMap<Integer,ArrayList<Pair<IBook, Integer>>> data = new HashMap<>();
     
     @Override
-    public boolean addBook(IUser user, IBook book, int quantity) {
+    public boolean addBook(IUser user, IBook book, int quantity) throws NotFound{
+        
+        if(quantity < 0){
+            return false;
+        }
         
         //check for existing User and Book & get the quantity available.
         int quantityAvailable;
+        int userId;
+        int bookId;
         try{
-            user.getId();
-            book.getID();
+            userId = user.getId();
+            bookId = book.getID();
             quantityAvailable = book.getAvailableQuantity();
         } catch(NotFound ex){
             return false;
@@ -40,32 +48,42 @@ public class CartManager implements ICartManager{
         }
         
         //if user has no items in the cart
-        if(data.get(user) == null){
+        if(data.get(userId) == null){
+            
+            if(quantity == 0){
+                return true;
+            }
+            
             //then make a new cart and insert the items
             ArrayList<Pair<IBook, Integer>> userList = new ArrayList<>();
             userList.add(new Pair<>(book,quantity));
-            data.put(user, userList);
+            data.put(userId, userList);
             
         //if user has items in the cart
         }else{
             
             //get the items
-            ArrayList<Pair<IBook, Integer>> userList = data.get(user);
+            ArrayList<Pair<IBook, Integer>> userList = data.get(userId);
             boolean succ = false;
             
             //if the book already in the list then add the quantity to the quantity in the cart
             for(int i=0;i<userList.size();i++){
-                if(userList.get(i).getKey().equals(book)){
-                    
-                    if(userList.get(i).getValue()+quantity > quantityAvailable){
-                        return false;
+                if(userList.get(i).getKey().getISBN().equals(book.getISBN())){
+                        
+                    if(quantity == 0){
+                        userList.remove(i);
                     }else{
-                        userList.set(i, new Pair<>(book,userList.get(i).getValue()+quantity));
-                        succ = true;
-                        break;
+                        userList.set(i, new Pair<>(book,quantity));
                     }
-                    
+
+                    succ = true;
+                    break;
                 }
+            }
+            
+            
+            if(quantity == 0){
+                return true;
             }
             
             //if the the book is not in the cart then add it to the cart
@@ -80,13 +98,23 @@ public class CartManager implements ICartManager{
 
     @Override
     public void flushCart(IUser user) {
-        data.remove(user);
+        try {
+            data.remove(user.getId());
+        } catch (NotFound ex) {
+
+        }
     }
 
     @Override
     public ArrayList<Pair<IBook, Integer>> getUserCart(IUser user) {
         
-        ArrayList<Pair<IBook, Integer>> toReturn = data.get(user);
+        ArrayList<Pair<IBook, Integer>> toReturn;
+        
+        try {
+            toReturn = data.get(user.getId());
+        } catch (NotFound ex) {
+            return new ArrayList<>();
+        }
         
         if(toReturn == null){
             return new ArrayList<>();
@@ -94,5 +122,4 @@ public class CartManager implements ICartManager{
         
         return toReturn;
     }
-    
 }

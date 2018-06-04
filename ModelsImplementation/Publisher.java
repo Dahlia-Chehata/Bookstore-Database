@@ -19,10 +19,11 @@ public class Publisher implements IPublisher{
     //Mysql handler
     private PreparedStatement statementSQL;
     private ErrorHandler errorHandler;
-    private int publiserId;
+    private final int publiserId;
     
     public Publisher(int publiserId) throws NotFound{
         this.publiserId = publiserId;
+        errorHandler = new ErrorHandler();
         //vlidate the id
         getId();
     }
@@ -44,10 +45,6 @@ public class Publisher implements IPublisher{
             errorHandler.terminate();
         }
         
-        //Null the selectorStatement
-        MysqlHandler.getInstance().closePreparedStatement(statementSQL);
-        statementSQL = null;
-        
         return data;
     }
     
@@ -64,6 +61,10 @@ public class Publisher implements IPublisher{
             errorHandler.report("Publisher Class", ex.getMessage());
             errorHandler.terminate();
             return -1;
+        } finally {
+            //Close && nullify the statement
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null;
         }
     }
 
@@ -80,6 +81,10 @@ public class Publisher implements IPublisher{
             errorHandler.report("Publisher Class", ex.getMessage());
             errorHandler.terminate();
             return "";
+        } finally {
+            //Close && nullify the statement
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null;
         }
     }
 
@@ -96,6 +101,10 @@ public class Publisher implements IPublisher{
             errorHandler.report("Publisher Class", ex.getMessage());
             errorHandler.terminate();
             return "";
+        } finally {
+            //Close && nullify the statement
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null;
         }
     }
 
@@ -112,6 +121,10 @@ public class Publisher implements IPublisher{
             errorHandler.report("Publisher Class", ex.getMessage());
             errorHandler.terminate();
             return "";
+        } finally {
+            //Close && nullify the statement
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null;
         }
     }
 
@@ -134,11 +147,11 @@ public class Publisher implements IPublisher{
         } catch (SQLException ex) {
             errorHandler.report("Publisher Class", ex.getMessage());
             return false;
+        } finally {
+            //Close && nullify the statement
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null;
         }
-        
-        //Null the selectorStatemen
-        MysqlHandler.getInstance().closePreparedStatement(statementSQL);
-        statementSQL = null;
         return true;
     }
     
