@@ -87,16 +87,21 @@ public class LoginPage implements IFrameController {
 //				@SuppressWarnings("deprecation")
 				String user_password = password.getText();
 				String[] login_information = new String[2];
+
 				login_information[0] = email_address;
 				login_information[1] = user_password;
 				System.out.println(email_address);
 				System.out.println(user_password);
+
 				try {
-					if (!g.set_login_information(login_information)) { //user not found
-						error_label.setVisible(true);
-						System.out.println("ERROR!");
-					}
-				} catch (NotFound e1) {
+					g.set_login_information(login_information);
+//					if (!g.set_login_information(login_information)) { //user not found
+//						error_label.setVisible(true);
+//						System.out.println("ERROR!");
+//					} else {
+						System.out.println("\n HELLOOO \n");
+//					}
+				} catch (Exception | NotFound e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				};

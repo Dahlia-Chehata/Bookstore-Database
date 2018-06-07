@@ -1,3 +1,4 @@
+
 package gui.books_handling;
 
 import java.awt.EventQueue;
@@ -144,8 +145,6 @@ public class AddBook {
 		lblCategory.setBounds(233, 172, 58, 16);
 		frame.getContentPane().add(lblCategory);
 
-		//String[] book_categories = new String[] {"Science", "Art",
-               // "Religion", "History", "Geography"};
 
 		bookcategories = new JComboBox<String>();
 		bookcategories.setFont(new Font("Times New Roman", Font.BOLD, 13));

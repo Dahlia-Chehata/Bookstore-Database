@@ -19,6 +19,10 @@ public class GuiController {
 	private String[] signup_information;
 
 
+	/**
+	 * boolean to show if the information entered by the user (logging in or signing up)
+	 * are correct or no
+	 */
 	private static boolean pass_login_signup;
 	private static boolean is_manager;
 
@@ -44,9 +48,9 @@ public class GuiController {
 			System.out.println(action_performed + " Sign up");
 			user_signup();
 			break;
-
-
 		}
+
+
 
 
 	}
@@ -58,7 +62,6 @@ public class GuiController {
 
 		while (action_performed == 0) { //nothing chosen yet
 			action_performed = start_page.get_action();
-
 		}
 		start_page.hide_frame();
 		return action_performed;
@@ -72,18 +75,19 @@ public class GuiController {
 
 	private static void user_log_in() {
 		LoginPage login_page = new LoginPage();
-		pass_login_signup = true;
 
-		if (pass_login_signup) {
-			login_page.hide_frame();
-			is_manager = true;
-			if (is_manager) {
-				Manager_controller manager_controller = new Manager_controller(g);
-				manager_controller.start();
-			} else {
-				Customer_controller customer_controller = new Customer_controller(g);
-				customer_controller.start();
-			}
+		while (!pass_login_signup) {
+			System.out.println("\nPass login = " + pass_login_signup + "\n");
+		}
+		//pass_login_signup = true;
+		login_page.hide_frame();
+		//is_manager = true;
+		if (is_manager) {
+			Manager_controller manager_controller = new Manager_controller(g);
+			manager_controller.start();
+		} else {
+			Customer_controller customer_controller = new Customer_controller(g);
+			customer_controller.start();
 		}
 
 	}
@@ -103,7 +107,8 @@ public class GuiController {
 
 	public boolean set_login_information(String[] login_information) throws NotFound {
 		this.login_information = login_information;
-		if (!send_login_information()) {
+
+		if (!send_login_information()) { //false information
 			pass_login_signup = false;
 
 			return false;
@@ -114,17 +119,19 @@ public class GuiController {
 		} else {
 			is_manager = false;
 		}
+		//is_manager = true;
 		pass_login_signup = true;
 		return true;
 	}
 
 	private boolean send_login_information() throws NotFound {
-		loggedin_user = user_manager.getByEmailAndPassword(login_information[0], login_information[1]);
-		if (loggedin_user != null) { //An available user
-			return true;
-		} else { //user not found or password doesn't match
-			return false;
-		}
+		return true;
+//		loggedin_user = user_manager.getByEmailAndPassword(login_information[0], login_information[1]);
+//		if (loggedin_user != null) { //An available user
+//			return true;
+//		} else { //user not found or password doesn't match
+//			return false;
+//		}
 	}
 
 

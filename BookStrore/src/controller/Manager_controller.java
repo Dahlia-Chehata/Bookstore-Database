@@ -9,7 +9,9 @@ public class Manager_controller {
 	private GuiController g;
 	private ManagerActionsPage manager_action_page;
 	private ManagerAddBookController addbook_controller;
+	private ManagerModifyBookController modifybook_controller;
 //	private AddBook add_book_page;
+	private ManagerSearchBookController searchbooks_controller;
 
 	public Manager_controller(GuiController g) {
 		this.g = g;
@@ -30,4 +32,23 @@ public class Manager_controller {
 		return books_counter;
 	}
 
+	public void modify_book() {
+		modifybook_controller = new ManagerModifyBookController(this);
+
+	}
+	public void search_books() {
+		searchbooks_controller = new ManagerSearchBookController(this);
+	}
+
+	public void promote_user() {
+
+	}
+
+	public void place_orders() {
+
+	}
+
+	public void view_reports() {
+
+	}
 }

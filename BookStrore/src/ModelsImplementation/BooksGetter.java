@@ -21,18 +21,18 @@ public class BooksGetter implements IBooksGetter{
 
     //column names
     private final ArrayList<String> columnsNames;
-    
+
     //Argument given in the conditions
     private final ArrayList<Integer> intArguments;
     private final ArrayList<Double> doubleArguments;
     private final ArrayList<String> stringArguments;
     private boolean invalid;
-    
+
     //Mysql handler
     private PreparedStatement statementSQL;
     private ErrorHandler errorHandler;
 
-    
+
     void reset(){
         columnsNames.clear();
         intArguments.clear();
@@ -40,15 +40,15 @@ public class BooksGetter implements IBooksGetter{
         stringArguments.clear();
         invalid = false;
     }
-    
-    BooksGetter(){
+
+    public BooksGetter(){
         columnsNames = new ArrayList<>();
         intArguments = new ArrayList<>();
         doubleArguments = new ArrayList<>();
         stringArguments = new ArrayList<>();
         invalid = false;
     }
-    
+
     @Override
     public IBooksGetter getBooksByTitle(String bookTitle) {
         columnsNames.add("books.Title");
@@ -104,7 +104,7 @@ public class BooksGetter implements IBooksGetter{
         doubleArguments.add(endingPrice);
         return this;
     }
-    
+
     public IBooksGetter getBooksByPublisher(IPublisher publisher){
         columnsNames.add("Books_ISBNs.Publisher_id");
         try{
@@ -116,17 +116,17 @@ public class BooksGetter implements IBooksGetter{
         return this;
     }
 
-    
+
     String getCondition(){
-        
+
         String condition = new String();
-        
+
         for(int i=0;i<columnsNames.size();i++){
-            
+
             if(i != 0){
                 condition += " AND ";
             }
-            
+
             if(columnsNames.get(i).equals("Books_ISBNs.Publication_Year")){
                 condition += columnsNames.get(i) + " > ? ";
                 condition += " AND ";
@@ -142,20 +142,20 @@ public class BooksGetter implements IBooksGetter{
             }
 
         }
-        
+
         if(condition.equals("")){
             condition = "true";
         }
-        
+
         return condition;
     }
-    
+
     void binding() throws SQLException{
 
         int intPointer = 0;
         int stringPointer = 0;
         int doublePointer = 0;
-        
+
         for(int i=0;i<columnsNames.size();i++){
 
             switch (columnsNames.get(i)) {
@@ -188,9 +188,9 @@ public class BooksGetter implements IBooksGetter{
                 default:
                     break;
             }
-            
+
         }
-        
+
     }
 
     @Override
@@ -201,21 +201,21 @@ public class BooksGetter implements IBooksGetter{
 
     @Override
     public ArrayList<IBook> get() {
-        
+
         ArrayList<IBook> booksList = new ArrayList<>();
-        
-        String sqlQuery = "SELECT DISTINCT `Books_ISBNs`.`ISBN` FROM `Books_ISBNs` INNER JOIN `books` " + 
+
+        String sqlQuery = "SELECT DISTINCT `Books_ISBNs`.`ISBN` FROM `Books_ISBNs` INNER JOIN `books` " +
                 " ON `Books_ISBNs`.`Book_id` = `books`.`Book_id` " +
                 " INNER JOIN Authors ON `Authors`.`Book_id` = `books`.`Book_id` " +
                 " WHERE " + getCondition();
-        
+
         statementSQL = MysqlHandler.getInstance().getPreparedStatement(sqlQuery);
-        
+
         try {
-            
+
             //do parameter binding
             binding();
-            
+
             statementSQL.execute();
             ResultSet books = statementSQL.getResultSet();
 
@@ -223,7 +223,7 @@ public class BooksGetter implements IBooksGetter{
 
                 //Retrieve the data
                 String bookISBN  = books.getString("ISBN");
-                
+
                 //add the author to the authorsList
                 try{
                     booksList.add(new Book(bookISBN));
@@ -232,12 +232,12 @@ public class BooksGetter implements IBooksGetter{
                     //So no need to add it.
                 }
             }
-            
+
         } catch (SQLException ex) {
             errorHandler.report("Author Class", ex.getMessage());
             errorHandler.terminate();
         }
-        
+
         //Null the selectorStatemen
         MysqlHandler.getInstance().closePreparedStatement(statementSQL);
         statementSQL = null;
@@ -245,5 +245,5 @@ public class BooksGetter implements IBooksGetter{
         reset();
         return booksList;
     }
-    
+
 }
