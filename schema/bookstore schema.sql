@@ -83,7 +83,7 @@ create table if not exists book_store.manager_order(
     mgr_order_id  int not null auto_increment,		
 	ISBN    varchar (40) not null,
 	no_of_copies int,
-    confirmed boolean not null,
+
   constraint manager_order_pk primary key (mgr_order_id,ISBN),
   constraint manager_order_isbn_fk foreign key (ISBN) references books_ISBNs(ISBN)
 );
@@ -111,34 +111,23 @@ FOR EACH ROW BEGIN
  where ISBN = NEW.ISBN;
    IF (NEW.Available_Quantity < OLD.Threshold+ordered_quantity) THEN
       if ordered_quantity=0 then
-	  insert into book_store.manager_order (ISBN,no_of_copies,confirmed) values(new.ISBN,20,false);
+	  insert into book_store.manager_order (ISBN,no_of_copies) values(new.ISBN,(OLD.Available_Quantity-NEW.Available_Quantity)*1.5);
       else
        update book_store.manager_order
-       set no_of_copies = no_of_copies+20
-       where ISBN= NEW.ISBN;
+       set no_of_copies = no_of_copies+(OLD.Available_Quantity-NEW.Available_Quantity)*1.5
+       where manager_order.ISBN = NEW.ISBN;
        END IF;
    END IF;
 END$$
 DELIMITER ;
 
 -- check if quantity is less than a threshold after insertion
-DROP trigger if exists threshold_after_update;
+DROP trigger if exists threshold_after_insert;
 DELIMITER $$
-CREATE TRIGGER threshold_after_update AFTER update ON Books_ISBNs
+CREATE TRIGGER threshold_after_insert AFTER insert ON Books_ISBNs
 FOR EACH ROW BEGIN
- declare ordered_quantity int;
- set ordered_quantity=0;
- select no_of_copies into ordered_quantity
- from manager_order natural join books_ISBNs 
- where ISBN = NEW.ISBN;
-   IF (NEW.Available_Quantity < OLD.Threshold+ordered_quantity) THEN
-      if ordered_quantity=0 then
-	  insert into book_store.manager_order (ISBN,no_of_copies,confirmed) values(new.ISBN,20,false);
-      else
-       update book_store.manager_order
-       set no_of_copies = no_of_copies+20
-       where ISBN= NEW.ISBN;
-       END IF;
+   IF (NEW.Available_Quantity < NEW.Threshold) THEN
+	  insert into book_store.manager_order (ISBN,no_of_copies) values(NEW.ISBN,(NEW.Threshold - NEW.Available_Quantity)*1.5);
    END IF;
 END$$
 DELIMITER ;
@@ -148,9 +137,8 @@ DROP trigger if exists delete_manager_order ;
 DELIMITER $$
 CREATE TRIGGER delete_manager_order BEFORE DELETE ON manager_order
 FOR EACH ROW BEGIN
-   IF (confirmed=0) THEN
-       CALL raise_error;
-   END IF;
+   UPDATE Books_ISBNs SET Books_ISBNs.Available_Quantity = (Books_ISBNs.Available_Quantity + OLD.no_of_copies) WHERE 
+   Books_ISBNs.ISBN = OLD.ISBN;
 END$$
 DELIMITER ;
 
