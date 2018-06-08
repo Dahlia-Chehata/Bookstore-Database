@@ -1,6 +1,5 @@
 package controller;
 
-import gui.books_handling.AddBook;
 import gui.books_handling.ManagerActionsPage;
 
 public class Manager_controller {

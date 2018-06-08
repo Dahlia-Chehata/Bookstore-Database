@@ -8,13 +8,15 @@ create table if not exists book_store.Publishers(
 	Publisher_id		int primary key Not Null auto_increment,	
 	Publisher_Name      varchar (40) not null,
 	Publisher_Address   varchar(40) null,
-	Publisher_Telephone   varchar(40) null
+	Publisher_Telephone   varchar(40) null,
+	FULLTEXT Publisher_Name_idx (Publisher_Name)
 );
 
 create table if not exists book_store.books(
 	Book_id		int primary key Not Null auto_increment,	
 	Title       varchar(40) not null,
 	category_id  int not null,
+    FULLTEXT title_idx (Title),
     constraint books_category_fk foreign key (category_id) references Categories(category_id)
 );
 
@@ -26,14 +28,15 @@ create table if not exists book_store.Books_ISBNs(
 	Selling_price   double not null,
 	Available_Quantity int not null, 
 	Threshold int not null,
-    
+    FULLTEXT ISBN_idx (ISBN),
     constraint books_isbns_fk foreign key (Book_id) references books(book_id),
 	constraint isbns_publishers_fk foreign key (Publisher_id) references Publishers(Publisher_id)
 );
 
 create table if not exists book_store.Authors(
 	Book_id	 int not null,				
-	Author_Name	 varchar (40) not null ,			
+	Author_Name	 varchar (40) not null ,
+    FULLTEXT Author_Name_idx (Author_Name),
     constraint authors_pk primary key (Book_id,Author_Name),
 	constraint books_authors_fk foreign key (Book_id) references books(book_id)
 );
@@ -135,7 +138,7 @@ DELIMITER ;
 -- check if the order is confirmed before deletion
 DROP trigger if exists delete_manager_order ;
 DELIMITER $$
-CREATE TRIGGER delete_manager_order BEFORE DELETE ON manager_order
+CREATE TRIGGER delete_manager_order AFTER DELETE ON manager_order
 FOR EACH ROW BEGIN
    UPDATE Books_ISBNs SET Books_ISBNs.Available_Quantity = (Books_ISBNs.Available_Quantity + OLD.no_of_copies) WHERE 
    Books_ISBNs.ISBN = OLD.ISBN;
@@ -188,3 +191,10 @@ FOR EACH ROW BEGIN
    END IF;
 END$$
 DELIMITER ;
+
+SET FOREIGN_KEY_CHECKS =0;
+INSERT INTO `book_store`.`books_isbns` (`ISBN`, `Book_id`, `Publisher_id`, `Publication_Year`, `Selling_price`, `Available_Quantity`, `Threshold`) VALUES ('1560', '1', '1', '2016', '500', '12', '3');
+SET FOREIGN_KEY_CHECKS =1;
+
+SELECT * FROM books_isbns
+WHERE MATCH(ISBN) AGAINST ('1560');
