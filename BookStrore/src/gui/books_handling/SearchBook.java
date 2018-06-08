@@ -242,28 +242,14 @@ public class SearchBook {
 		frame.getContentPane().add(lblSellingPriceMax);
 	}
 
-
-//	private void set_book_attributes() {
-//		m.setAuthors_before(author_names.getText());
-//		m.setAvailable_quantity(avail_quantity.getText());
-//		m.setCategory(bookcategories.getSelectedItem().toString());
-//		m.setBook_isbn(isbn.getText());
-//		m.setPub_information(pub_name.getText(), pub_addr.getText(), pub_phone.getText());
-//		m.setPub_year(pub_year.getText());
-//		m.setSelling_price(selling_price.getText());
-//		m.setThreshold(threshold.getText());
-//		m.setQuantity_to_be_orderd(quantity_to_be_ordered.getText());
-//	}
 	private void send_search_information() {
 		m.setAuthors_before(author_names.getText());
-		m.setAvailable_quantity(avail_quantity.getText());
+		m.setAvailable_quantity(avail_quant_min.getText(), avail_quant_max.getText());
 		m.setCategory(bookcategories.getSelectedItem().toString());
 		m.setBook_isbn(isbn.getText());
-		m.setPub_information(pub_name.getText(), pub_addr.getText(), pub_phone.getText());
-		m.setPub_year(pub_year_old.getText());
-		m.setSelling_price(selling_price_min());
-		m.setThreshold(threshold_minText());
-		m.setQuantity_to_be_orderd(quantity_to_be_ordered.getText());
+		m.setPub_name(pub_name.getText());
+		m.setSelling_price(selling_price_min.getText(), selling_price_max.getText());
+		m.setThreshold(threshold_min.getText(), threshold_max.getText());
 
 	}
 }

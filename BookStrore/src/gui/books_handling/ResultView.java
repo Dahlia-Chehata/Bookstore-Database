@@ -46,8 +46,16 @@ public class ResultView {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
-		table = new JTable(arg0, arg1)
+		table = new JTable(data, column_names);
 		table.setBounds(419, 246, -415, -234);
 		frame.getContentPane().add(table);
+	}
+
+	public void setData(String[][] data) {
+		this.data = data;
+	}
+
+	public void setColumn_names(String[] column_names) {
+		this.column_names = column_names;
 	}
 }

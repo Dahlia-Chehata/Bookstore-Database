@@ -79,9 +79,9 @@ public class GuiController {
 		while (!pass_login_signup) {
 			System.out.println("\nPass login = " + pass_login_signup + "\n");
 		}
-		//pass_login_signup = true;
+		pass_login_signup = true;
 		login_page.hide_frame();
-		//is_manager = true;
+		is_manager = true;
 		if (is_manager) {
 			Manager_controller manager_controller = new Manager_controller(g);
 			manager_controller.start();

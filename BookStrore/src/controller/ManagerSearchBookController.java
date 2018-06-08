@@ -202,10 +202,12 @@ public class ManagerSearchBookController {
 
 		}
 
+		//clone getter >> getter2
 		int size = getter.booksCount();
-
+		//getter = getter2.clone
 		for (int j = 0; j < size; j = j + 15) {
-
+			//getter = getter2.clone
+			//getter.get(i, i+15)
 		}
 	}
 
