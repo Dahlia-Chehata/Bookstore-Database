@@ -1,18 +1,12 @@
 package gui.books_handling;
 
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.AbstractButton;
-import javax.swing.BoxLayout;
-import java.awt.GridLayout;
 import javax.swing.JButton;
 import java.awt.Font;
-import javax.swing.JTable;
-
+import HelperClasses.NotFound;
 import controller.Manager_controller;
 
-import javax.swing.JScrollPane;
 import java.awt.event.ActionListener;
 import java.util.Enumeration;
 import java.awt.event.ActionEvent;
@@ -21,33 +15,19 @@ import javax.swing.ButtonGroup;
 
 public class ManagerActionsPage {
 
-	Manager_controller m;
+	Manager_controller manager_controller;
 
 	private JFrame frame;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
-
-	/**
-	 * Launch the application.
-	 */
-//	public static void main(String[] args) {
-//
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-//					ManagerActionsPage window = new ManagerActionsPage();
-//					window.frame.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
-
+	private JButton btnLogout;
+	private JButton btnEditInformation;
+	JButton btnSearchBooks;
 	/**
 	 * Create the application.
+	 * @param manager_controller
 	 */
-	public ManagerActionsPage() {
-
+	public ManagerActionsPage(Manager_controller manager_controller) {
+		this.manager_controller = manager_controller;
 		initialize();
 		this.frame.setVisible(true);
 
@@ -64,26 +44,36 @@ public class ManagerActionsPage {
 
 		JButton btn_add_new_book = new JButton("Add a new book");
 		btn_add_new_book.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
-				m.add_book();
+				try {
+					manager_controller.add_book();
+				} catch (NotFound e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		btn_add_new_book.setFont(new Font("Times New Roman", Font.BOLD, 13));
 		btn_add_new_book.setBounds(72, 72, 128, 38);
 		frame.getContentPane().add(btn_add_new_book);
 
-		JButton btn_place_order = new JButton("Place order");
-		btn_place_order.addActionListener(new ActionListener() {
+		JButton btn_add_publisher = new JButton("Add Publisher");
+		btn_add_publisher.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
+				manager_controller.addPublisher();
 			}
 		});
-		btn_place_order.setFont(new Font("Times New Roman", Font.BOLD, 13));
-		btn_place_order.setBounds(72, 141, 128, 38);
-		frame.getContentPane().add(btn_place_order);
+		btn_add_publisher.setFont(new Font("Times New Roman", Font.BOLD, 13));
+		btn_add_publisher.setBounds(72, 141, 128, 38);
+		frame.getContentPane().add(btn_add_publisher);
 
 		JButton btn_modify_book = new JButton("Modify a book");
 		btn_modify_book.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				manager_controller.modify_book();
 			}
 		});
 		btn_modify_book.setFont(new Font("Times New Roman", Font.BOLD, 13));
@@ -92,7 +82,9 @@ public class ManagerActionsPage {
 
 		JButton btn_promote_customers = new JButton("Promote customers");
 		btn_promote_customers.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
+				manager_controller.promote_user();
 			}
 		});
 		btn_promote_customers.setFont(new Font("Times New Roman", Font.BOLD, 13));
@@ -124,26 +116,10 @@ public class ManagerActionsPage {
 
 		JButton btn_veiw_reports_2 = new JButton("View reports");
 		btn_veiw_reports_2.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				String button_selected = getSelectedButtonText(buttonGroup);
-
-				//This should be in the controller to be sent to an appropriate interface
-/*				switch (button_selected) {
-				case "1": //Total sales
-					break;
-
-				case "2": //Top 5 customers
-					System.out.println("HIII");
-					break;
-
-				case "3": //Top 10 selling books
-					System.out.println("HEYYY");
-					break;
-
-				default:
-					break;
-				}*/
-
+				manager_controller.view_reports(button_selected);
 			}
 		});
 		btn_veiw_reports_2.setFont(new Font("Times New Roman", Font.BOLD, 13));
@@ -153,12 +129,16 @@ public class ManagerActionsPage {
 
 		JButton btn_view_reports = new JButton("View reports");
 		btn_view_reports.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				btn_add_new_book.setVisible(false);
-				btn_place_order.setVisible(false);
+				btn_add_publisher.setVisible(false);
 				btn_modify_book.setVisible(false);
 				btn_promote_customers.setVisible(false);
 				btn_view_reports.setVisible(false);
+				btnEditInformation.setVisible(false);
+				btnLogout.setVisible(false);
+				btnSearchBooks.setVisible(false);
 
 				btn_veiw_reports_2.setVisible(true);
 				radiobtn_total_sales.setVisible(true);
@@ -167,8 +147,48 @@ public class ManagerActionsPage {
 			}
 		});
 		btn_view_reports.setFont(new Font("Times New Roman", Font.BOLD, 13));
-		btn_view_reports.setBounds(72, 212, 128, 38);
+		btn_view_reports.setBounds(237, 212, 149, 38);
 		frame.getContentPane().add(btn_view_reports);
+
+		btnSearchBooks = new JButton("Search Books");
+		btnSearchBooks.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				manager_controller.search_books();
+			}
+		});
+		btnSearchBooks.setFont(new Font("Times New Roman", Font.BOLD, 13));
+		btnSearchBooks.setBounds(72, 212, 128, 38);
+		frame.getContentPane().add(btnSearchBooks);
+
+		btnLogout = new JButton("Logout");
+		btnLogout.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				manager_controller.logout();
+				frame.setVisible(false);
+				frame.dispose();
+			}
+		});
+		btnLogout.setFont(new Font("Times New Roman", Font.BOLD, 13));
+		btnLogout.setBounds(304, 11, 149, 38);
+		frame.getContentPane().add(btnLogout);
+
+		btnEditInformation = new JButton("Edit Information");
+		btnEditInformation.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					manager_controller.editInformation();
+				} catch (NotFound e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		btnEditInformation.setFont(new Font("Times New Roman", Font.BOLD, 13));
+		btnEditInformation.setBounds(6, 11, 128, 38);
+		frame.getContentPane().add(btnEditInformation);
 
 
 	}
@@ -188,7 +208,9 @@ public class ManagerActionsPage {
 
 
 	public void set_manager_controller (Manager_controller m) {
-		this.m = m;
+		this.manager_controller = m;
 }
-
+	public void reOpen() {
+		this.frame.setVisible(true);
+	}
 }

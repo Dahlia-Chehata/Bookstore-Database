@@ -18,7 +18,7 @@ public interface IAuthor {
      *
      * @return ArrayList of all the books written by this author.
      */
-    ArrayList<IBook> getWrittenBooks();
+    ArrayList<IBook> gwtWrittenBooks();
     
     /**
      *

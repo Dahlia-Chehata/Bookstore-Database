@@ -24,7 +24,7 @@ public class UserStatus implements IUserStatus{
         errorHandler = new ErrorHandler();
         //set the id
         this.statusId = statusId;
-        //validate the id
+        //vlidate the id
         getId();
     }
     

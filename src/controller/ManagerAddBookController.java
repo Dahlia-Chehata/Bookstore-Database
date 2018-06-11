@@ -1,11 +1,10 @@
 package controller;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-
-import ModelsImplementation.Author;
+import HelperClasses.NotFound;
 import ModelsImplementation.AuthorManager;
 import ModelsImplementation.BookManager;
+import ModelsImplementation.BooksGetter;
 import ModelsImplementation.CategoryManager;
 import ModelsImplementation.PublisherManager;
 import ModelsInterfaces.IAuthor;
@@ -40,17 +39,29 @@ public class ManagerAddBookController {
 	private ArrayList<IAuthor> authors;
 	private ICategory book_category;
 	private IPublisher book_publisher;
+	ArrayList<IPublisher> publishers; //all publishers
 	private int publishing_year;
 	private double book_selling_price;
 	private int threshold_int;
+	IPublisherManager pub_manager ;
+
+	private int book_number;
 
 
-
-	public ManagerAddBookController(Manager_controller m) {
+	public ManagerAddBookController(Manager_controller m) throws NotFound {
 		this.m = m;
+		this.book_number = m.getBookCount();
+		this.pub_manager = new PublisherManager();
+		publishers = pub_manager.getAllPublishers();
 		add_book_page = new AddBook(this);
 
-//		add_book();
+	}
+	public ManagerAddBookController() throws NotFound {
+		this.book_number =new BooksGetter().booksCount()+1;
+		this.pub_manager = new PublisherManager();
+		publishers = pub_manager.getAllPublishers();
+		add_book_page = new AddBook(this);
+
 	}
 
 	public void setBook_title(String book_title) {
@@ -76,17 +87,55 @@ public class ManagerAddBookController {
 
 	public void setCategory(String category) {
 		ICategoryManager cat_manager = new CategoryManager();
-		this.book_category = cat_manager.addCategory(category);
+		this.book_category = cat_manager.getCategoryByName(category);
+//		this.book_category = cat_manager.addCategory(category);
 	}
 
-	public void setAuthors(ArrayList<IAuthor> authors) {
-		this.authors = authors;
+//	public void setAuthors(ArrayList<IAuthor> authors) {
+//		this.authors = authors;
+//	}
+
+	public ArrayList<String> getPublisherNames() throws NotFound {
+
+		ArrayList<String> publishers_names = setPublishersNames(publishers);
+		return publishers_names;
 	}
 
-	public void setPub_information(String pub_name, String pub_address, String pub_telephone) {
-		IPublisherManager pub_manager = new PublisherManager();
-		this.book_publisher = pub_manager.addPublisher(pub_name,
-				pub_address, pub_telephone);
+	public ArrayList<String> getPublishersPhones() throws NotFound {
+		ArrayList<String> publishers_phones = setPublishersPhones(publishers);
+		return publishers_phones;
+	}
+
+	private ArrayList<String> setPublishersPhones(ArrayList<IPublisher> publishers) throws NotFound {
+
+		ArrayList<String> publishers_phones = new ArrayList<>();
+		for (IPublisher pub : publishers) {
+			publishers_phones.add(pub.getTelephone());
+		}
+		return publishers_phones;
+	}
+
+	private ArrayList<String> setPublishersNames(ArrayList<IPublisher> publishers) throws NotFound {
+		ArrayList<String> publishers_names = new ArrayList<>();
+		for (IPublisher pub : publishers) {
+			publishers_names.add(pub.getName());
+		}
+		return publishers_names;
+	}
+
+	public void setPub_information(String pub_name_and_telephone) throws NotFound {
+		String[] publisher_information = pub_name_and_telephone.split(" - ");
+//		System.out.println(publisher_information[0]);
+//		System.out.println(publisher_information[1]);
+		for (IPublisher pub : publishers) {
+			if (pub.getName().trim() .equals(publisher_information[0].trim()) &&
+				 pub.getTelephone().trim().equals(publisher_information[1].trim())) {
+					//correct publisher
+					book_publisher = pub;
+					System.out.println(book_publisher);
+					break;
+			}
+		}
 	}
 
 	public void setPub_year(String pub_year) {
@@ -97,16 +146,13 @@ public class ManagerAddBookController {
 		this.book_selling_price = Double.parseDouble(selling_price);
 	}
 
-//	public void setAdd_book_page(AddBook add_book_page) {
-//		this.add_book_page = add_book_page;
-//	}
-
 	public void setAuthors_before(String authors_before) {
 		this.authors_before = authors_before;
 		set_authors();
 	}
 
 	private void set_authors() {
+		authors = new ArrayList<>();
 		String[] authors_array = authors_before.split(",");
 		IAuthorManager author_manager = new AuthorManager();
 		IAuthor author;
@@ -116,11 +162,18 @@ public class ManagerAddBookController {
 		}
 	}
 
-	private void add_book() {
+	public void add_book() {
 		book_manager = new BookManager();
+		System.out.println(book_publisher);
+		System.out.println(book_title);
+
 		book_manager.addBook(book_title, book_category, book_isbn, book_publisher,
-				publishing_year, book_selling_price, available_quantity_int, threshold_int,
-				authors);
+				publishing_year, book_selling_price,available_quantity_int, threshold_int, authors);
+
+	}
+
+	public int getBooks_counter() {
+		return book_number;
 	}
 
 

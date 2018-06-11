@@ -29,7 +29,7 @@ public class Book implements IBook{
         errorHandler = new ErrorHandler();
         statementSQL = null;
         
-        //validate the ISBN
+        //vlidate the ISBN
         this.bookId = getID();
     }
     
@@ -323,74 +323,37 @@ public class Book implements IBook{
         
         return publisher;
     }
-
-    private boolean dbBookUpdater(String dbName, String colName, String newData) throws NotFound{
-
-        //update the entry
-        String sqlQuery = "UPDATE " + dbName + " SET " + colName + " = ? WHERE Book_id = ?";
-        statementSQL = MysqlHandler.getInstance().getPreparedStatementWithKeys(sqlQuery);
-        
-        try {
-        
-            statementSQL.setString(1, newData);
-            statementSQL.setInt(2, bookId);
-            int rows = statementSQL.executeUpdate();
-
-	    if(rows == 0){
-                throw new NotFound();
-            }
-	    
-        } catch (SQLException ex) {
-            errorHandler.report("Author Class", ex.getMessage());
-            return false;
-        } finally {
-            //Null the selectorStatemen
-            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
-            statementSQL = null;  
-        }
-
-        return true;
-    }
     
-    private boolean dbBookUpdater(String dbName, String colName, int newData) throws NotFound{
-     
+    private boolean dbBookUpdater(String dbName, String colName, Object newData) throws NotFound{
+
         //update the entry
-        String sqlQuery = "UPDATE " + dbName + " SET " + colName + " = ? WHERE Book_id = ?";
-        statementSQL = MysqlHandler.getInstance().getPreparedStatementWithKeys(sqlQuery);
-        
-        try {
-        
-            statementSQL.setInt(1, newData);
-            statementSQL.setInt(2, bookId);
-
-            int rows = statementSQL.executeUpdate();
-
-	    if(rows == 0){
-                throw new NotFound();
-            }
-	    
-        } catch (SQLException ex) {
-            errorHandler.report("Author Class", ex.getMessage());
-            return false;
-        } finally {
-            //Null the selectorStatemen
-            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
-            statementSQL = null;  
+        String sqlQuery;
+        if(dbName.equals("books")){
+            sqlQuery = "UPDATE " + dbName + " SET " + colName + " = ? WHERE Book_id = ?";
+        }else{
+            sqlQuery = "UPDATE " + dbName + " SET " + colName + " = ? WHERE ISBN = ?";
         }
-
-        return true;
-    }
-    
-    private boolean dbBookUpdater(String dbName, String colName, double newData) throws NotFound{
-
-        //update the entry
-        String sqlQuery = "UPDATE " + dbName + " SET " + colName + " = ? WHERE Book_id = ?";
+        System.out.println(sqlQuery);
         statementSQL = MysqlHandler.getInstance().getPreparedStatementWithKeys(sqlQuery);
         
         try {
-        
-            statementSQL.setDouble(1, newData);
-            statementSQL.setInt(2, bookId);
+            
+            //set the first parameter
+            if(newData instanceof Double){
+                statementSQL.setDouble(1, ((Double) newData).doubleValue());
+            }else if(newData instanceof Integer){
+                statementSQL.setInt(1, ((Integer) newData).intValue());
+            }else if (newData instanceof String){
+                statementSQL.setString(1, ((String) newData));
+            }else {
+                throw new RuntimeException("Error in the bookManager Update function");
+            }
+            
+            if(dbName.equals("books")){
+                statementSQL.setInt(2, bookId);
+            }else{
+                statementSQL.setString(2, bookISBN);
+            }
             
             int rows = statementSQL.executeUpdate();
 
@@ -399,7 +362,7 @@ public class Book implements IBook{
             }
 	    
         } catch (SQLException ex) {
-            errorHandler.report("Author Class", ex.getMessage());
+            errorHandler.report("bookUpdater Class", ex.getMessage());
             return false;
         } finally {
             //Null the selectorStatemen

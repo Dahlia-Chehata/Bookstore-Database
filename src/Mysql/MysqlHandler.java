@@ -218,4 +218,7 @@ final public class MysqlHandler{
     public void finalize(){
         this.cleanUp();
     }
+    public void state(){
+        System.out.println("Open connections : " + used_Connection.size() + "\nOpen statements : " + (used_Statement.size() + used_Prepared_Statement.size()));
+    }
 }

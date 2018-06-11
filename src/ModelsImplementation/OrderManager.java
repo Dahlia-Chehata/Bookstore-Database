@@ -81,6 +81,7 @@ public class OrderManager implements IOrderManager{
             statement.executeUpdate();
         } catch (SQLException ex) {
             errorHandler.report("Order Manager Class", ex.getMessage());
+            try{conn.rollback();}catch(SQLException e){}
             MysqlHandler.getInstance().closeConnection(conn);
             return null;
         }
@@ -92,6 +93,7 @@ public class OrderManager implements IOrderManager{
             statement.execute();
         } catch (SQLException ex) {
             errorHandler.report("Order Manager Class", ex.getMessage());
+            try{conn.rollback();}catch(SQLException e){}
             MysqlHandler.getInstance().closeConnection(conn);
             return null;
         }
@@ -128,6 +130,7 @@ public class OrderManager implements IOrderManager{
             
         } catch (SQLException ex) {
             errorHandler.report("Order Manager Class", ex.getMessage());
+            try{conn.rollback();}catch(SQLException e){}
             MysqlHandler.getInstance().closeConnection(conn);
             return null;
         }
@@ -215,7 +218,7 @@ public class OrderManager implements IOrderManager{
         
         OrdersGetter getter = new OrdersGetter();
         System.out.println(getter.getOrdersByTotalPrice(0, 500).getOrdersByUser(new User(1)).getOrdersByCreditcardNo("545335").getOrdersByTime(new Timestamp(2018-1900,05-1,14,16,03,19,0), new Timestamp(2018-1900,05-1,14,16,03,19,0)).get().size());
-               // Mysql.MysqlHandler.getInstance().state();
+                Mysql.MysqlHandler.getInstance().state();
 
         
     }

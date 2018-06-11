@@ -1,7 +1,6 @@
 package ModelsImplementation;
 
 import HelperClasses.NotFound;
-
 import HelperClasses.ErrorHandler;
 import ModelsInterfaces.IAuthor;
 import ModelsInterfaces.IBook;
@@ -35,7 +34,7 @@ public class Author implements IAuthor{
     }
 
     @Override
-    public ArrayList<IBook> getWrittenBooks(){
+    public ArrayList<IBook> gwtWrittenBooks(){
         
         ArrayList<IBook> authorBooks = new ArrayList<>();
         BookManager bookGetter = new BookManager();

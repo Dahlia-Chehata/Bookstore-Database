@@ -1,13 +1,11 @@
 package gui.books_handling;
 
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JCheckBox;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
+import HelperClasses.NotFound;
 import controller.ManagerModifyBookController;
 
 import javax.swing.JButton;
@@ -22,26 +20,14 @@ public class ModifyBook {
 	/**
 	 * Launch the application.
 	 */
-//	public static void main(String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-//					ModifyBook window = new ModifyBook();
-//					window.frame.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
 
-	private ManagerModifyBookController m;
+	private ManagerModifyBookController manager_modifybook_controller;
 
 	/**
 	 * Create the application.
 	 */
 	public ModifyBook(ManagerModifyBookController m) {
-		this.m = m;
+		this.manager_modifybook_controller = m;
 		initialize();
 		this.frame.setVisible(true);
 	}
@@ -74,14 +60,22 @@ public class ModifyBook {
 
 		JButton Search_btn = new JButton("Search");
 		Search_btn.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				String input = textField.getText();
+				manager_modifybook_controller.set_text(input);
 				if (ISBN_radiobtn.isSelected()) {
-					m.set_search_method(0);
+					manager_modifybook_controller.set_search_method(0);
 				} else { //it is a title
-					m.set_search_method(1);
+					manager_modifybook_controller.set_search_method(1);
 				}
-				m.set_text(input);
+				try {
+					manager_modifybook_controller.search();
+				} catch (NotFound e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
 			}
 		});
 		Search_btn.setBounds(316, 212, 89, 23);

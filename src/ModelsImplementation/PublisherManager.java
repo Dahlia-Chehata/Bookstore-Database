@@ -159,7 +159,7 @@ public class PublisherManager implements IPublisherManager{
     }
     
     public static void main(String[] args) throws NotFound{
-        PublisherManager mng = new PublisherManager();
+        IPublisherManager mng = new PublisherManager();
         //mng.addStatus("normal");
         mng.addPublisher("name", "address", "telephone");
         System.out.println(mng.getAllPublishers().size());
@@ -174,7 +174,7 @@ public class PublisherManager implements IPublisherManager{
         System.out.println(pub.changeAddress("newAddress"));
         System.out.println(pub.changeName("newName"));
         System.out.println(pub.changeTelephone("newTelephone"));
-        //Mysql.MysqlHandler.getInstance().state();
+        Mysql.MysqlHandler.getInstance().state();
 
         //System.out.println(mng.getById(1).changeName("Hello"));
     }

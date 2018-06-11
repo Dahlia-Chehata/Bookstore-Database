@@ -241,7 +241,7 @@ public class UserManager implements IUserManager{
         System.out.println(user.changeStatus(new UserStatus(1)));
         System.out.println(user.changeUsername("newUsername"));
         System.out.println(user.comparePassword("newPassword"));
-        // Mysql.MysqlHandler.getInstance().state();
+        Mysql.MysqlHandler.getInstance().state();
 
     }
 }

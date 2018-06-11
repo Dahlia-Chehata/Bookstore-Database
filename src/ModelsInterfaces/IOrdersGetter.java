@@ -61,6 +61,14 @@ public interface IOrdersGetter {
 
     /**
      *
+     * @param limit max number of orders to be returned.
+     * @param offset offset of orders.
+     * @return ArrayList of all the selected orders.
+     */
+    ArrayList<IOrder> get(int limit, int offset);
+    
+    /**
+     *
      * @return ArrayList of all the selected orders.
      */
     ArrayList<IOrder> get();

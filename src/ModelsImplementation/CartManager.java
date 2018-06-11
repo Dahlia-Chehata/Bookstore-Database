@@ -7,8 +7,6 @@ import ModelsInterfaces.ICartManager;
 import ModelsInterfaces.IUser;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.util.Pair;
 
 /**
@@ -129,7 +127,7 @@ public class CartManager implements ICartManager{
         System.out.println(mng.addBook(new User(1), new Book("LLIU"), 5));
         //mng.flushCart(new User(1));
         System.out.println(mng.getUserCart(new User(1)).get(0).getValue());
-               // Mysql.MysqlHandler.getInstance().state();
+                Mysql.MysqlHandler.getInstance().state();
 
     }
     

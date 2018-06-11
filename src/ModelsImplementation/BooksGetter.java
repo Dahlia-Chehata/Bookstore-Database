@@ -17,7 +17,7 @@ import java.util.ArrayList;
  *
  * @author Fares
  */
-public class BooksGetter implements IBooksGetter{
+public class BooksGetter implements IBooksGetter, Cloneable{
 
     //column names
     private final ArrayList<String> columnsNames;
@@ -36,6 +36,11 @@ public class BooksGetter implements IBooksGetter{
     //Mysql handler
     private PreparedStatement statementSQL;
     private final ErrorHandler errorHandler;
+    
+    @Override
+    public BooksGetter clone() throws CloneNotSupportedException{
+        return (BooksGetter) super.clone();
+    }
     
     public BooksGetter(){
         errorHandler = new ErrorHandler();
@@ -164,7 +169,7 @@ public class BooksGetter implements IBooksGetter{
             }
             totalConditions++;
             
-            condition += " MATCH ( " +  match.get(i) + " ) AGAINST (?) ";
+            condition += " MATCH ( " +  match.get(i) + " ) AGAINST (? IN BOOLEAN MODE) ";
         }
         
         if(condition.equals("")){
@@ -232,22 +237,71 @@ public class BooksGetter implements IBooksGetter{
 
     @Override
     public int booksCount() {
-        int val =  get().size();
+        int val =  get(Integer.MAX_VALUE,0).size();
         reset();
         return val;
     }
 
-    @Override
+        @Override
     public ArrayList<IBook> get() {
         
         ArrayList<IBook> booksList = new ArrayList<>();
         
         String sqlQuery = "SELECT DISTINCT `Books_ISBNs`.`ISBN` FROM `Books_ISBNs` INNER JOIN `books` " + 
                 " ON `Books_ISBNs`.`Book_id` = `books`.`Book_id` " +
-                " INNER JOIN `Authors` ON `Authors`.`Book_id` = `books`.`Book_id` " +
                 " INNER JOIN `Categories` ON `Categories`.`category_id` = `books`.`category_id` "+
+                " LEFT JOIN `Authors` ON `Authors`.`Book_id` = `books`.`Book_id` " +
                 " WHERE " + getCondition();
+        System.out.println(sqlQuery);
+        statementSQL = MysqlHandler.getInstance().getPreparedStatement(sqlQuery);
+        
+        try {
+            
+            //do parameter binding
+            binding();
+            
+            statementSQL.execute();
+            ResultSet books = statementSQL.getResultSet();
 
+            while(books.next()){
+
+                //Retrieve the data
+                String bookISBN  = books.getString("ISBN");
+                
+                //add the author to the authorsList
+                try{
+                    booksList.add(new Book(bookISBN));
+                } catch(NotFound ex){
+                    //This means the book was deleted.
+                    //So no need to add it.
+                }
+            }
+            
+        } catch (SQLException ex) {
+            errorHandler.report("BooksGetter Class", ex.getMessage());
+            errorHandler.terminate();
+        } finally{
+            //Null the selectorStatement
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null;
+        }
+
+        reset();
+        return booksList;
+    }
+
+    
+    @Override
+    public ArrayList<IBook> get(int limit, int offset) {
+        
+        ArrayList<IBook> booksList = new ArrayList<>();
+        
+        String sqlQuery = "SELECT DISTINCT `Books_ISBNs`.`ISBN` FROM `Books_ISBNs` INNER JOIN `books` " + 
+                " ON `Books_ISBNs`.`Book_id` = `books`.`Book_id` " +
+                " INNER JOIN `Categories` ON `Categories`.`category_id` = `books`.`category_id` "+
+                " LEFT JOIN `Authors` ON `Authors`.`Book_id` = `books`.`Book_id` " +
+                " WHERE " + getCondition() + " ORDER BY `Books_ISBNs`.`ISBN` LIMIT " + limit + " OFFSET " + offset;
+        System.out.println(sqlQuery);
         statementSQL = MysqlHandler.getInstance().getPreparedStatement(sqlQuery);
         
         try {
@@ -328,4 +382,9 @@ public class BooksGetter implements IBooksGetter{
         intArguments.add(availableQuantityEnd);
         return this;
     }
+    
+    public static void main(String argc[]) throws CloneNotSupportedException{
+        BooksGetter bg =  new BooksGetter();
+        System.out.println(bg.getBooksByISBN("xxxxx").booksCount());
+        }
 }

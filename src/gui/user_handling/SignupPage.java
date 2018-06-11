@@ -1,6 +1,4 @@
 package gui.user_handling;
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -9,11 +7,9 @@ import java.awt.Color;
 import javax.swing.SwingConstants;
 
 import HelperClasses.NotFound;
-import ModelsInterfaces.IUserStatus;
 import controller.GuiController;
 import controller.IFrameController;
 
-import java.awt.TextArea;
 import javax.swing.JButton;
 import javax.swing.JPasswordField;
 import java.awt.event.ActionListener;
@@ -43,22 +39,6 @@ public class SignupPage implements IFrameController {
 	private JLabel lblRequiredFields;
 	private JPasswordField password;
 	private JPasswordField password_repeat;
-
-	/**
-	 * Launch the application.
-	 */
-//	public static void main(String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-//					SignupPage window = new SignupPage();
-//					window.frame.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
 
 	/**
 	 * Create the application.
@@ -98,6 +78,12 @@ public class SignupPage implements IFrameController {
 		error_label.setBounds(25, 420, 335, 19);
 		error_label.setVisible(false);
 		frame.getContentPane().add(error_label);
+
+		JLabel error_label1 = new JLabel("The passwords don't match!");
+		error_label1.setForeground(Color.RED);
+		error_label1.setBounds(25, 420, 335, 19);
+		error_label1.setVisible(false);
+		frame.getContentPane().add(error_label1);
 
 		JLabel lblRepeatPassword = new JLabel("Repeat password");
 		lblRepeatPassword.setFont(new Font("Times New Roman", Font.BOLD, 15));
@@ -181,10 +167,12 @@ public class SignupPage implements IFrameController {
 
 		btn_signup = new JButton("Sign Up");
 		btn_signup.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 
 				if(password.getText().equals(password_repeat.getText())) {
-					error_label.setVisible(false);
+					error_label1.setVisible(false);
+					error_label1.setVisible(false);
 
 					String[] signup_information = new String[8];
 					signup_information[0] = username.getText();
@@ -198,17 +186,14 @@ public class SignupPage implements IFrameController {
 
 					try {
 						g.set_signup_information(signup_information);
+						hide_frame();
 					} catch (NotFound e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						error_label1.setVisible(true);
+//						e.printStackTrace();
 					}
-
 				} else {
-					error_label.setVisible(true);
+					error_label1.setVisible(true);
 				}
-
-
-
 
 			}
 		});

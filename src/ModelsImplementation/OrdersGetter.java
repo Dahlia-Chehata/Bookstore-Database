@@ -192,6 +192,49 @@ public class OrdersGetter implements IOrdersGetter{
         reset();
         return orderList;
     }
+    
+    @Override
+    public ArrayList<IOrder> get(int limit, int offset) {
+        
+        ArrayList<IOrder> orderList = new ArrayList<>();
+        String sqlQuery = "SELECT DISTINCT `orders`.`Id` FROM `orders` WHERE " + getCondition() + " ORDER BY `orders`.`Id` LIMIT " + limit + " OFFSET " + offset;
+
+        statementSQL = MysqlHandler.getInstance().getPreparedStatement(sqlQuery);
+        
+        try {
+            
+            //do parameter binding
+            binding();
+            
+            statementSQL.execute();
+            ResultSet orders = statementSQL.getResultSet();
+
+            while(orders.next()){
+
+                //Retrieve the data
+                int orderId  = orders.getInt("Id");
+                
+                //add the author to the authorsList
+                try{
+                    orderList.add(new Order(orderId));
+                } catch(NotFound ex){
+                    //This means the order was deleted.
+                    //So no need to add it.
+                }
+            }
+            
+        } catch (SQLException ex) {
+            errorHandler.report("OrdersGetter Class", ex.getMessage());
+            errorHandler.terminate();
+        } finally{
+            //Null the selectorStatemen
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null;
+        }
+
+        reset();
+        return orderList;
+    }
 
     
     @Override
@@ -201,7 +244,7 @@ public class OrdersGetter implements IOrdersGetter{
 
     @Override
     public int salesCount() {
-        int val =  get().size();
+        int val =  get(Integer.MAX_VALUE,0).size();
         reset();
         return val;
     }

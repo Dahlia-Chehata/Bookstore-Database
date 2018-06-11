@@ -5,18 +5,23 @@ import ModelsImplementation.UserManager;
 import ModelsImplementation.UserStatus;
 import ModelsInterfaces.IUser;
 import ModelsInterfaces.IUserManager;
+import gui.StartPage;
 import gui.user_handling.LoginPage;
 import gui.user_handling.SignupPage;
 
 public class GuiController {
 
-	static GuiController g;
+	static GuiController gui_controller;
 
-	IUser loggedin_user;
+	private static ActionsPageController user_controller;
+
+	private IUser loggedin_user;
 	static IUserManager user_manager;
 
 	private String[] login_information;
 	private String[] signup_information;
+
+	private static int userId;
 
 
 	/**
@@ -28,7 +33,7 @@ public class GuiController {
 
 	public GuiController() {
 
-		g = this;
+		gui_controller = this;
 
 		user_manager = new UserManager();
 
@@ -37,23 +42,24 @@ public class GuiController {
 
 
 	public static void main(String[] args) {
-		int action_performed = start_screen();
-		switch (action_performed) {
-		case 1: //Login to an already available user
-			System.out.println(action_performed + " Log in");
-			user_log_in();
-			break;
+		int action_performed;
+//		while (true) {
+			action_performed = start_screen();
+			switch (action_performed) {
+			case 1: //Login to an already available user
+				System.out.println(action_performed + " Log in");
+				user_log_in();
+				break;
 
-		case 2: //Sign up to a new user
-			System.out.println(action_performed + " Sign up");
-			user_signup();
-			break;
-		}
-
-
-
-
+			case 2: //Sign up to a new user
+				System.out.println(action_performed + " Sign up");
+				user_signup();
+				break;
+			}
+//		}
 	}
+
+
 
 	private static int start_screen() {
 		StartPage start_page = new StartPage();
@@ -70,6 +76,14 @@ public class GuiController {
 
 	private static void user_signup() {
 		SignupPage signup_page = new SignupPage();
+		
+//		signup_page.hide_frame();
+		while (!pass_login_signup) {
+			
+		}
+		user_controller = new Customer_controller(gui_controller, userId);
+		user_controller.start();
+		
 	}
 
 
@@ -81,13 +95,15 @@ public class GuiController {
 		}
 		pass_login_signup = true;
 		login_page.hide_frame();
-		is_manager = true;
+
 		if (is_manager) {
-			Manager_controller manager_controller = new Manager_controller(g);
-			manager_controller.start();
+			user_controller = new Manager_controller(gui_controller, userId);
+			user_controller.start();
+//			user_controller.reOpenActionsPage();
 		} else {
-			Customer_controller customer_controller = new Customer_controller(g);
-			customer_controller.start();
+			user_controller = new Customer_controller(gui_controller, userId);
+			user_controller.start();
+//			user_controller.reOpenActionsPage();
 		}
 
 	}
@@ -95,14 +111,19 @@ public class GuiController {
 	public void set_signup_information(String[] signup_information) throws NotFound {
 		this.signup_information = signup_information;
 		send_signup_information();
+
 	}
 
 
-
 	private void send_signup_information() throws NotFound {
-		user_manager.addUser(signup_information[0], signup_information[1],
+		
+		loggedin_user = user_manager.addUser(signup_information[0], signup_information[1],
 				signup_information[2], signup_information[3], signup_information[4],
 				signup_information[5], signup_information[6], new UserStatus(0));
+		if (loggedin_user != null) {
+			pass_login_signup = true;
+			userId = loggedin_user.getId();
+		}
 	}
 
 	public boolean set_login_information(String[] login_information) throws NotFound {
@@ -125,14 +146,15 @@ public class GuiController {
 	}
 
 	private boolean send_login_information() throws NotFound {
-		return true;
-//		loggedin_user = user_manager.getByEmailAndPassword(login_information[0], login_information[1]);
-//		if (loggedin_user != null) { //An available user
-//			return true;
-//		} else { //user not found or password doesn't match
-//			return false;
-//		}
-	}
+		loggedin_user = user_manager.getByEmailAndPassword(login_information[0], login_information[1]);
+		if (loggedin_user != null) { //An available user
+			userId = loggedin_user.getId();
+			return true;
+		} else { //user not found or password doesn't match
+			userId = -1;
+			return false;
+		}
 
+	}
 
 }

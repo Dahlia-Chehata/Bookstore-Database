@@ -107,7 +107,7 @@ public class UserStatusManager implements IUserStatusManager{
         mng.addStatus("normal");
         System.out.println(mng.getAllUserStatuses().size());
         System.out.println(mng.getById(1).changeName("Hello"));
-        //Mysql.MysqlHandler.getInstance().state();
+        Mysql.MysqlHandler.getInstance().state();
     }
     
 }

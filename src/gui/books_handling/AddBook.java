@@ -1,20 +1,20 @@
 
 package gui.books_handling;
 
-import java.awt.EventQueue;
-
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JTextField;
 
+import HelperClasses.NotFound;
+import ModelsImplementation.BookManager;
+import ModelsImplementation.BooksGetter;
 import controller.ManagerAddBookController;
-import controller.Manager_controller;
-
 import java.awt.Color;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 
 public class AddBook {
@@ -30,10 +30,9 @@ public class AddBook {
 	private JLabel lblThreshold;
 	private JTextField threshold;
 	private JLabel lblQuantityToBe;
-	private JTextField quantity_to_be_ordered;
+//	private JTextField quantity_to_be_ordered;
 	private JLabel lblCategory;
 	private JLabel lblPublisherName;
-	private JTextField pub_name;
 	private JLabel lblAuthorNames;
 	private JTextField author_names;
 	private JLabel lblNewLabel_1;
@@ -45,39 +44,29 @@ public class AddBook {
 	private JComboBox<String> bookcategories;
 	private JTextField avail_quantity;
 	private JLabel lblAvailableQuantity;
-	private JLabel lblPublisherAddress;
-	private JTextField pub_addr;
-	private JLabel lblPublisherPhone;
-	private JTextField pub_phone;
-	/**
-	 * Launch the application.
-	 */
-//	public static void main(String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-//					AddBook window = new AddBook();
-//					window.frame.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
+
+	private JComboBox pub_name_telephone;
+	
 
 	/**
 	 * Create the application.
+	 * @throws NotFound
 	 */
-	public AddBook(ManagerAddBookController m) {
+	public AddBook(ManagerAddBookController m) throws NotFound {
 		this.m = m;
 		initialize();
 		this.frame.setVisible(true);
 	}
 
+//	public AddBook() {
+//		initialize();
+//	}
+
 	/**
 	 * Initialize the contents of the frame.
+	 * @throws NotFound
 	 */
-	private void initialize() {
+	private void initialize() throws NotFound {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 527, 566);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -96,7 +85,10 @@ public class AddBook {
 		textField_id = new JTextField();
 		textField_id.setEditable(false);
 		textField_id.setBounds(129, 53, 86, 20);
-//		textField_id.setText("#" + m.getBooks_counter());
+		//textField_id.setText("#" + m.getBooks_counter());
+		int cnt= new BooksGetter().booksCount()+1;
+		textField_id.setText("#" +cnt);
+
 		frame.getContentPane().add(textField_id);
 		textField_id.setColumns(10);
 
@@ -130,21 +122,10 @@ public class AddBook {
 		threshold.setBounds(131, 135, 39, 20);
 		frame.getContentPane().add(threshold);
 
-		lblQuantityToBe = new JLabel("Quantity to be ordered");
-		lblQuantityToBe.setFont(new Font("Times New Roman", Font.BOLD, 13));
-		lblQuantityToBe.setBounds(213, 137, 130, 16);
-		frame.getContentPane().add(lblQuantityToBe);
-
-		quantity_to_be_ordered = new JTextField();
-		quantity_to_be_ordered.setColumns(10);
-		quantity_to_be_ordered.setBounds(361, 135, 39, 20);
-		frame.getContentPane().add(quantity_to_be_ordered);
-
 		lblCategory = new JLabel("Category");
 		lblCategory.setFont(new Font("Times New Roman", Font.BOLD, 13));
 		lblCategory.setBounds(233, 172, 58, 16);
 		frame.getContentPane().add(lblCategory);
-
 
 		bookcategories = new JComboBox<String>();
 		bookcategories.setFont(new Font("Times New Roman", Font.BOLD, 13));
@@ -161,51 +142,63 @@ public class AddBook {
 		lblPublisherName.setBounds(55, 212, 103, 16);
 		frame.getContentPane().add(lblPublisherName);
 
-		pub_name = new JTextField();
-		pub_name.setColumns(10);
-		pub_name.setBounds(168, 210, 233, 20);
-		frame.getContentPane().add(pub_name);
+		pub_name_telephone = new JComboBox();
+		pub_name_telephone.setBounds(157, 210, 243, 20);
+		ArrayList<String> pub_names = m.getPublisherNames();
+		ArrayList<String> pub_phones = m.getPublishersPhones();
+		int number_of_publishers = pub_names.size();
+		for (int i = 0; i < number_of_publishers; i++) {
+			pub_name_telephone.addItem(pub_names.get(i) + " - " + pub_phones.get(i));
+		}
+		frame.getContentPane().add(pub_name_telephone);
 
 		lblAuthorNames = new JLabel("Author Name(s)");
 		lblAuthorNames.setFont(new Font("Times New Roman", Font.BOLD, 13));
-		lblAuthorNames.setBounds(55, 349, 103, 16);
+		lblAuthorNames.setBounds(55, 284, 103, 16);
 		frame.getContentPane().add(lblAuthorNames);
 
 		author_names = new JTextField();
 		author_names.setColumns(10);
-		author_names.setBounds(157, 347, 233, 20);
+		author_names.setBounds(157, 282, 233, 20);
 		frame.getContentPane().add(author_names);
 
 		lblNewLabel_1 = new JLabel("Separate author names by (,). Ex. John Marc, Philip Kane");
 		lblNewLabel_1.setForeground(Color.GRAY);
-		lblNewLabel_1.setBounds(87, 376, 363, 14);
+		lblNewLabel_1.setBounds(87, 311, 363, 14);
 		frame.getContentPane().add(lblNewLabel_1);
 
-		lblPublisherYear = new JLabel("Publisher Year");
+		lblPublisherYear = new JLabel("Publishing Year");
 		lblPublisherYear.setFont(new Font("Times New Roman", Font.BOLD, 13));
-		lblPublisherYear.setBounds(55, 317, 97, 16);
+		lblPublisherYear.setBounds(55, 252, 97, 16);
 		frame.getContentPane().add(lblPublisherYear);
 
 		pub_year = new JTextField();
 		pub_year.setColumns(10);
-		pub_year.setBounds(157, 315, 68, 20);
+		pub_year.setBounds(157, 250, 68, 20);
 		frame.getContentPane().add(pub_year);
 
 		lblSellingPrice = new JLabel("Selling Price");
 		lblSellingPrice.setFont(new Font("Times New Roman", Font.BOLD, 13));
-		lblSellingPrice.setBounds(55, 401, 97, 16);
+		lblSellingPrice.setBounds(55, 336, 97, 16);
 		frame.getContentPane().add(lblSellingPrice);
 
 		selling_price = new JTextField();
 		selling_price.setColumns(10);
-		selling_price.setBounds(157, 401, 68, 20);
+		selling_price.setBounds(157, 336, 68, 20);
 		frame.getContentPane().add(selling_price);
 
 		btnAddBook = new JButton("Add Book");
 		btnAddBook.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				if (!empty_fields()) {
-					set_book_attributes();
+					try {
+						set_book_attributes();
+						m.add_book();
+					} catch (NotFound e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				} else {
 					//error
 				}
@@ -214,7 +207,7 @@ public class AddBook {
 
 		});
 		btnAddBook.setFont(new Font("Times New Roman", Font.BOLD, 13));
-		btnAddBook.setBounds(351, 433, 99, 50);
+		btnAddBook.setBounds(351, 368, 99, 50);
 		frame.getContentPane().add(btnAddBook);
 
 		avail_quantity = new JTextField();
@@ -227,48 +220,30 @@ public class AddBook {
 		lblAvailableQuantity.setBounds(55, 168, 115, 20);
 		frame.getContentPane().add(lblAvailableQuantity);
 
-		lblPublisherAddress = new JLabel("Publisher Address");
-		lblPublisherAddress.setFont(new Font("Times New Roman", Font.BOLD, 13));
-		lblPublisherAddress.setBounds(55, 247, 103, 16);
-		frame.getContentPane().add(lblPublisherAddress);
-
-		pub_addr = new JTextField();
-		pub_addr.setColumns(10);
-		pub_addr.setBounds(167, 245, 233, 20);
-		frame.getContentPane().add(pub_addr);
-
-		lblPublisherPhone = new JLabel("Publisher Phone");
-		lblPublisherPhone.setFont(new Font("Times New Roman", Font.BOLD, 13));
-		lblPublisherPhone.setBounds(55, 286, 103, 16);
-		frame.getContentPane().add(lblPublisherPhone);
-
-		pub_phone = new JTextField();
-		pub_phone.setColumns(10);
-		pub_phone.setBounds(168, 284, 233, 20);
-		frame.getContentPane().add(pub_phone);
 	}
 
 
-	private void set_book_attributes() {
+	private void set_book_attributes() throws NotFound {
 		m.setAuthors_before(author_names.getText());
 		m.setAvailable_quantity(avail_quantity.getText());
 		m.setCategory(bookcategories.getSelectedItem().toString());
 		m.setBook_isbn(isbn.getText());
-		m.setPub_information(pub_name.getText(), pub_addr.getText(), pub_phone.getText());
+	    m.setPub_information(pub_name_telephone.getSelectedItem().toString());
 		m.setPub_year(pub_year.getText());
 		m.setSelling_price(selling_price.getText());
 		m.setThreshold(threshold.getText());
-		m.setQuantity_to_be_orderd(quantity_to_be_ordered.getText());
+		m.setBook_title(title.getText());
+//		manager_controller.setQuantity_to_be_orderd(quantity_to_be_ordered.getText());
 	}
 
 	private boolean empty_fields() {
 		if (isbn.getText().isEmpty() || title.getText().isEmpty()
-				|| threshold.getText().isEmpty() || quantity_to_be_ordered.getText().isEmpty()
-				|| pub_name.getText().isEmpty() || author_names.getText().isEmpty()
-				|| pub_year.getText().isEmpty() || selling_price.getText().isEmpty()
+				|| threshold.getText().isEmpty()
+				|| pub_name_telephone.getSelectedItem().toString().isEmpty()
+				|| author_names.getText().isEmpty() || pub_year.getText().isEmpty()
+				|| selling_price.getText().isEmpty()
 				|| bookcategories.getSelectedItem().toString().isEmpty()
-				|| avail_quantity.getText().isEmpty() || pub_addr.getText().isEmpty()
-				|| pub_phone.getText().isEmpty()) {
+				|| avail_quantity.getText().isEmpty()) {
 			return true;
 		}
 		return false;

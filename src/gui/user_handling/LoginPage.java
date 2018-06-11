@@ -1,6 +1,4 @@
 package gui.user_handling;
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
@@ -10,6 +8,7 @@ import javax.swing.SwingConstants;
 import HelperClasses.NotFound;
 import controller.GuiController;
 import controller.IFrameController;
+import controller.Manager_controller;
 
 import javax.swing.JButton;
 import javax.swing.JPasswordField;
@@ -24,6 +23,8 @@ public class LoginPage implements IFrameController {
 	private JFrame frame;
 	private JTextField email;
 	private JPasswordField password;
+
+	private Manager_controller m;
 
 	/**
 	 * Launch the application.
@@ -46,6 +47,7 @@ public class LoginPage implements IFrameController {
 	 * Create the application.
 	 */
 	public LoginPage() {
+//		this.m = manager_controller;
 		initialize();
 		this.frame.setVisible(true);
 	}
@@ -82,6 +84,7 @@ public class LoginPage implements IFrameController {
 
 		JButton btn_login = new JButton("Log In");
 		btn_login.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				String email_address = email.getText();
 //				@SuppressWarnings("deprecation")
@@ -94,13 +97,13 @@ public class LoginPage implements IFrameController {
 				System.out.println(user_password);
 
 				try {
-					g.set_login_information(login_information);
-//					if (!g.set_login_information(login_information)) { //user not found
-//						error_label.setVisible(true);
+					boolean b = g.set_login_information(login_information);
+					if (!b) { //user not found
+						error_label.setVisible(true);
 //						System.out.println("ERROR!");
-//					} else {
-						System.out.println("\n HELLOOO \n");
-//					}
+					} else {
+//						System.out.println("\n HELLOOO \n");
+					}
 				} catch (Exception | NotFound e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();

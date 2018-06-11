@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="query1" pageWidth="200" pageHeight="55" columnWidth="200" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="d47a86a4-1a09-49ce-96a6-dc912e07ea97">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="book_store"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<queryString>
+		<![CDATA[select* from total_sales_previous_month]]>
+	</queryString>
+	<field name="SUM(purchases.TotalPrice)" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="SUM(purchases.TotalPrice)"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="total_sales_previous_month"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="55" splitType="Stretch">
+			<textField>
+				<reportElement stretchType="ContainerHeight" x="0" y="0" width="200" height="40" uuid="79124e17-4db8-44b5-8024-7f81818c7c10"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SUM(purchases.TotalPrice)}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

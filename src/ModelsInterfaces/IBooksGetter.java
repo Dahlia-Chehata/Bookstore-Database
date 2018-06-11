@@ -1,5 +1,6 @@
 package ModelsInterfaces;
 
+import ModelsImplementation.BooksGetter;
 import java.util.ArrayList;
 
 /**
@@ -160,7 +161,18 @@ public interface IBooksGetter {
 
     /**
      *
+     * @param limit max number of books to be returned.
+     * @param offset offset of books.
+     * @return ArrayList of all the matched books.
+     */
+    ArrayList<IBook> get(int limit, int offset);
+
+
+    /**
+     *
      * @return ArrayList of all the matched books.
      */
     ArrayList<IBook> get();
+    
+    public BooksGetter clone()  throws CloneNotSupportedException;
 }

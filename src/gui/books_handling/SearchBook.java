@@ -1,18 +1,16 @@
 package gui.books_handling;
 
 import java.awt.Color;
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JTextField;
 
-import controller.ManagerSearchBookController;
+import HelperClasses.NotFound;
+import controller.SearchBookController;
 
 import javax.swing.JComboBox;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -20,7 +18,6 @@ public class SearchBook {
 
 	private JFrame frame;
 	private JTextField textField_isbn;
-	private JTextField isbn;
 	private JLabel lblIsbn;
 	private JTextField title;
 	private JLabel lblTitle;
@@ -40,7 +37,7 @@ public class SearchBook {
 	private JComboBox<String> bookcategories;
 	private JLabel lblAvailableQuantity;
 
-	private ManagerSearchBookController m;
+	private SearchBookController seachbook_controller;
 	private JTextField threshold_max;
 	private JLabel lblPublicationYearnewest;
 	private JTextField pub_year_new;
@@ -49,27 +46,12 @@ public class SearchBook {
 	private JTextField avail_quant_max;
 	private JTextField selling_price_max;
 	private JLabel lblSellingPriceMax;
-	/**
-	 * Launch the application.
-	 */
-//	public static void main(String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-//					SearchBook window = new SearchBook();
-//					window.frame.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
 
 	/**
 	 * Create the application.
 	 */
-	public SearchBook(ManagerSearchBookController m) {
-		this.m = m;
+	public SearchBook(SearchBookController m) {
+		this.seachbook_controller = m;
 		initialize();
 		this.frame.setVisible(true);
 	}
@@ -127,6 +109,7 @@ public class SearchBook {
 		bookcategories = new JComboBox<String>();
 		bookcategories.setFont(new Font("Times New Roman", Font.BOLD, 13));
 		bookcategories.setBounds(303, 53, 97, 24);
+		bookcategories.addItem("");
 		bookcategories.addItem("Science");
 		bookcategories.addItem("Art");
 		bookcategories.addItem("Religion");
@@ -181,8 +164,15 @@ public class SearchBook {
 
 		btnSearch = new JButton("Search");
 		btnSearch.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				send_search_information();
+				try {
+					seachbook_controller.search();
+				} catch (NotFound e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 
 
@@ -242,28 +232,17 @@ public class SearchBook {
 		frame.getContentPane().add(lblSellingPriceMax);
 	}
 
-
-//	private void set_book_attributes() {
-//		m.setAuthors_before(author_names.getText());
-//		m.setAvailable_quantity(avail_quantity.getText());
-//		m.setCategory(bookcategories.getSelectedItem().toString());
-//		m.setBook_isbn(isbn.getText());
-//		m.setPub_information(pub_name.getText(), pub_addr.getText(), pub_phone.getText());
-//		m.setPub_year(pub_year.getText());
-//		m.setSelling_price(selling_price.getText());
-//		m.setThreshold(threshold.getText());
-//		m.setQuantity_to_be_orderd(quantity_to_be_ordered.getText());
-//	}
 	private void send_search_information() {
-//		m.setAuthors_before(author_names.getText());
-//		m.setAvailable_quantity(avail_quantity.getText());
-//		m.setCategory(bookcategories.getSelectedItem().toString());
-//		m.setBook_isbn(isbn.getText());
-//		m.setPub_information(pub_name.getText(), pub_addr.getText(), pub_phone.getText());
-//		m.setPub_year(pub_year_old.getText());
-//		m.setSelling_price(selling_price_min());
-//		m.setThreshold(threshold_minText());
-//		m.setQuantity_to_be_orderd(quantity_to_be_ordered.getText());
-//
+		if (!(author_names.getText().isEmpty())) {
+			seachbook_controller.setAuthors_before(author_names.getText());
+		}
+		seachbook_controller.setAvailable_quantity(avail_quant_min.getText(), avail_quant_max.getText());
+		seachbook_controller.setCategory(bookcategories.getSelectedItem().toString());
+		seachbook_controller.setBook_isbn(textField_isbn.getText());
+		seachbook_controller.setPub_name(pub_name.getText());
+		seachbook_controller.setSelling_price(selling_price_min.getText(), selling_price_max.getText());
+		seachbook_controller.setPub_year(pub_year_old.getText(), pub_year_new.getText());
+		seachbook_controller.setThreshold(threshold_min.getText(), threshold_max.getText());
+
 	}
 }

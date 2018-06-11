@@ -88,8 +88,8 @@ public class AuthorManager implements IAuthorManager{
     public static void main(String[] args) throws NotFound{
         AuthorManager mng = new AuthorManager();
         System.out.println(mng.getAllAuthors().size());
-        System.out.println(mng.getOrAddAuthor("KHALED").getWrittenBooks().get(0).getTitle());
-       // Mysql.MysqlHandler.getInstance().state();
+        System.out.println(mng.getOrAddAuthor("KHALED").gwtWrittenBooks().get(0).getTitle());
+        Mysql.MysqlHandler.getInstance().state();
     }
     
 }

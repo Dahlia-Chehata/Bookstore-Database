@@ -35,13 +35,15 @@ public class ManagerOrder implements IManagerOrder{
     	}catch(NotFound ex) {return false;}
     	
         //update the entry
-        String sqlQuery = "INSERT INTO manager_order (ISBN,no_of_copies) VALUES (?,?)";
+        String sqlQuery = "INSERT INTO manager_order (ISBN,no_of_copies) VALUES (?,?) "
+                + "ON DUPLICATE KEY UPDATE no_of_copies=no_of_copies+?";
         statementSQL = MysqlHandler.getInstance().getPreparedStatement(sqlQuery);
         
         try {
         
             statementSQL.setString(1, ISBN);
             statementSQL.setInt(2, quantity);
+            statementSQL.setInt(3, quantity);
             
             statementSQL.executeUpdate();
 	    
@@ -95,11 +97,11 @@ public class ManagerOrder implements IManagerOrder{
                 
                 while(result.next()){
                 	try {
-						list.add(new singleOrder(result.getInt("mgr_order_id"),
-								result.getInt("no_of_copies"),new Book(result.getString("ISBN"))));
-					} catch (NotFound e) {
-						e.printStackTrace();
-					}
+				list.add(new singleOrder(result.getInt("mgr_order_id"),
+				result.getInt("no_of_copies"),new Book(result.getString("ISBN"))));
+			} catch (NotFound e) {
+				e.printStackTrace();
+			}
                 }
                 
             } catch (SQLException ex) {

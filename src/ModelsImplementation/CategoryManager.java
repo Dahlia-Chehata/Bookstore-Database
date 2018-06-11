@@ -190,7 +190,7 @@ public class CategoryManager implements ICategoryManager{
         System.out.println(cat.changeName("History"));
         System.out.println(cat);
         System.out.println(cat);
-              //  Mysql.MysqlHandler.getInstance().state();
+                Mysql.MysqlHandler.getInstance().state();
 
     }
     

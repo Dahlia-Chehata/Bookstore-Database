@@ -41,7 +41,8 @@ public class BookManager implements IBookManager{
         //try to get Category and Publisher IDs
         try{
             categoryId = category.getId();
-            publisherId = publisher.getId();
+            publisherId = 
+            		publisher.getId();
         }catch (NotFound ex){
             //if either of them not existing, then return null.
             return null;
@@ -66,10 +67,11 @@ public class BookManager implements IBookManager{
             statement.executeUpdate();
         } catch (SQLException ex) {
             errorHandler.report("Book Manager Class", ex.getMessage());
+            try{conn.rollback();}catch(SQLException e){}
             //close the opened connection
             MysqlHandler.getInstance().closeConnection(conn);
             return null;
-        }
+        } 
         
         //Set the id of the book
         try {
@@ -78,6 +80,7 @@ public class BookManager implements IBookManager{
             statement.execute();
         } catch (SQLException ex) {
             errorHandler.report("Book Manager Class", ex.getMessage());
+            try{conn.rollback();}catch(SQLException e){}
             //close the opened connection
             MysqlHandler.getInstance().closeConnection(conn);
             return null;
@@ -100,6 +103,7 @@ public class BookManager implements IBookManager{
             statement.executeUpdate();
         } catch (SQLException ex) {
             errorHandler.report("Book Manager Class", ex.getMessage());
+            try{conn.rollback();}catch(SQLException e){}
             //close the opened connection
             MysqlHandler.getInstance().closeConnection(conn);
             return null;
@@ -119,6 +123,7 @@ public class BookManager implements IBookManager{
             
         } catch (SQLException ex) {
             errorHandler.report("Book Manager Class", ex.getMessage());
+            try{conn.rollback();}catch(SQLException e){}
             //close the opened connection
             MysqlHandler.getInstance().closeConnection(conn);
             return null;
@@ -130,6 +135,7 @@ public class BookManager implements IBookManager{
             conn.commit();
         } catch (SQLException ex) {
             errorHandler.report("Book Manager Class", ex.getMessage());
+            try{conn.rollback();}catch(SQLException e){}
             //close the opened connection
             MysqlHandler.getInstance().closeConnection(conn);
             return null;
@@ -157,16 +163,17 @@ public class BookManager implements IBookManager{
         BookManager mng = new BookManager();
         //System.out.println(mng.getBooks().get().size());
         
-        ArrayList<IAuthor> x = new ArrayList<>();
-        x.add(new Author("AHMED"));
-        x.add(new Author("KHALED"));
+        //ArrayList<IAuthor> x = new ArrayList<>();
+        //x.add(new Author("AHMED"));
+        //x.add(new Author("KHALED"));
         
         //System.out.println(mng.addBook("title2", new Category(1), "LLIUll", new Publisher(1), 1, 2, 30, 4, x));
     
         //System.out.println(mng.getBooks().getBooksByAuthor(new Author("Ahmed")).getBooksByISBN("LLIU").booksCount());
     
         IBook book = mng.getBooks().getBooksByISBN("OOIU").get().get(0);
-        
+                System.out.println(book.setThreshold(3));
+
         System.out.println(book.getAvailableQuantity());
         System.out.println(book.getCategory().getName());
         System.out.println(book.getID());
@@ -191,7 +198,7 @@ public class BookManager implements IBookManager{
         System.out.println(book.removeAuthour(new Author("AHMED")));
         System.out.println(book);
         
-      //  Mysql.MysqlHandler.getInstance().state();
+        Mysql.MysqlHandler.getInstance().state();
     }
     
 }
