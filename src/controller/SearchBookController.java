@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import HelperClasses.NotFound;
 import ModelsImplementation.AuthorManager;
 import ModelsImplementation.BooksGetter;
+import ModelsImplementation.CartManager;
 import ModelsImplementation.CategoryManager;
 import ModelsImplementation.PublisherManager;
 import ModelsInterfaces.IAuthor;
@@ -262,5 +263,10 @@ public class SearchBookController {
 
 	public IBooksGetter getBookGetter() {
 		return getter;
+	}
+
+
+	public CartManager getCartManager() {
+		return (actions_page_controller.getCartManager());
 	}
 }

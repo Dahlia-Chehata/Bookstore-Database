@@ -4,6 +4,8 @@ package gui.books_handling;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import javax.swing.JTextField;
 
@@ -196,11 +198,11 @@ public class AddBook {
 						set_book_attributes();
 						m.add_book();
 					} catch (NotFound e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				} else {
-					//error
+						JOptionPane.showMessageDialog(null,
+					    "Fill the Empty fields!","Try again", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 
@@ -236,7 +238,7 @@ public class AddBook {
 //		manager_controller.setQuantity_to_be_orderd(quantity_to_be_ordered.getText());
 	}
 
-	private boolean empty_fields() {
+	public boolean empty_fields() {
 		if (isbn.getText().isEmpty() || title.getText().isEmpty()
 				|| threshold.getText().isEmpty()
 				|| pub_name_telephone.getSelectedItem().toString().isEmpty()

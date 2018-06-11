@@ -1,6 +1,9 @@
 package controller;
 
 import java.util.ArrayList;
+
+import javax.swing.JOptionPane;
+
 import HelperClasses.NotFound;
 import ModelsImplementation.AuthorManager;
 import ModelsImplementation.BookManager;
@@ -56,14 +59,6 @@ public class ManagerAddBookController {
 		add_book_page = new AddBook(this);
 
 	}
-	public ManagerAddBookController() throws NotFound {
-		this.book_number =new BooksGetter().booksCount()+1;
-		this.pub_manager = new PublisherManager();
-		publishers = pub_manager.getAllPublishers();
-		add_book_page = new AddBook(this);
-
-	}
-
 	public void setBook_title(String book_title) {
 		this.book_title = book_title;
 	}
@@ -125,8 +120,6 @@ public class ManagerAddBookController {
 
 	public void setPub_information(String pub_name_and_telephone) throws NotFound {
 		String[] publisher_information = pub_name_and_telephone.split(" - ");
-//		System.out.println(publisher_information[0]);
-//		System.out.println(publisher_information[1]);
 		for (IPublisher pub : publishers) {
 			if (pub.getName().trim() .equals(publisher_information[0].trim()) &&
 				 pub.getTelephone().trim().equals(publisher_information[1].trim())) {
@@ -164,12 +157,11 @@ public class ManagerAddBookController {
 
 	public void add_book() {
 		book_manager = new BookManager();
-		System.out.println(book_publisher);
-		System.out.println(book_title);
-
-		book_manager.addBook(book_title, book_category, book_isbn, book_publisher,
-				publishing_year, book_selling_price,available_quantity_int, threshold_int, authors);
-
+		
+		if ((book_manager.addBook(book_title, book_category, book_isbn, book_publisher,
+				publishing_year, book_selling_price,available_quantity_int, threshold_int, authors))==null)
+			JOptionPane.showMessageDialog(null,
+		            "Duplicate entry for books!","Try again", JOptionPane.ERROR_MESSAGE);
 	}
 
 	public int getBooks_counter() {

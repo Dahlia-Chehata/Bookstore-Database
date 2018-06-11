@@ -136,7 +136,7 @@ public class OrderManager implements IOrderManager{
         }
         
         //Error in inserting
-        if(succ = false){
+        if(succ == false){
             MysqlHandler.getInstance().closeConnection(conn);
             return null;  
         }

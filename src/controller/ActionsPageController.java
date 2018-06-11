@@ -14,9 +14,12 @@ public abstract class ActionsPageController {
 	private EditInformationController editinformation_controller;
 	private SearchBookController searchbooks_controller;
 	private int user_id;
+	private CartManager cart_manager;
+	
 //	private GuiController gui_controller;
 
 	public ActionsPageController(GuiController g, int userId) {
+//		cart_manager = g.getCartManager();
 //		this.gui_controller = g;
 		this.user_id = userId;
 		user_manager = new UserManager();
@@ -30,8 +33,10 @@ public abstract class ActionsPageController {
 	}
 
 	public void logout() {
-		ICartManager cart_manager = new CartManager();
-		cart_manager.flushCart(user);
+//		ICartManager cart_manager = new CartManager();
+		if (cart_manager != null) {
+			cart_manager.flushCart(user);
+		}
 	}
 
 
@@ -41,6 +46,7 @@ public abstract class ActionsPageController {
 
 
 	public void search_books() {
+		cart_manager = new CartManager();
 		searchbooks_controller = new SearchBookController(this);
 	}
 
@@ -67,5 +73,10 @@ public abstract class ActionsPageController {
 		} else {
 			return false;
 		}
+	}
+
+
+	public CartManager getCartManager() {
+		return cart_manager;
 	}
 }

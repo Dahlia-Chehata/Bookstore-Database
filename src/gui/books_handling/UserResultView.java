@@ -25,6 +25,8 @@ public class UserResultView implements IResultView {
 
 
 	private ResultViewController result_controller;
+	private IResultView result_view;
+	
 	private JFrame frame;
 	private JTable table;
 	private String[] column_names;
@@ -36,28 +38,13 @@ public class UserResultView implements IResultView {
 
 
 	/**
-	 * Launch the application.
-	 */
-//	public static void main(String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-//					UserResultView window = new UserResultView();
-//					window.frame.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
-
-	/**
 	 * Create the application.
 	 * @param column_names2 
 	 * @param size 
 	 * @throws NotFound 
 	 */
 	public UserResultView(ResultViewController r, String[] column_names2, int size) throws NotFound {
+		this.result_view = this;
 		this.total_size_of_data = size;
 		this.column_names = column_names2;
 		this.result_controller = r;
@@ -97,9 +84,7 @@ public class UserResultView implements IResultView {
 		JButton btnNext = new JButton("Next");
 		btnNext.setFont(new Font("Times New Roman", Font.BOLD, 16));
 		btnNext.addActionListener(new ActionListener() {
-
-			private IResultView result_view;
-
+			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				number_of_next_clicks++;
@@ -114,8 +99,8 @@ public class UserResultView implements IResultView {
 
 				dm = new DefaultTableModel(data, column_names);
 				table = new JTable(dm);
-				table.getColumn("Buy").setCellRenderer(new ButtonRenderer());
-			    table.getColumn("Buy").setCellEditor(new ButtonEditorResultAdd(new JCheckBox(), this.result_view));
+				table.getColumn("Buy").setCellRenderer(new ButtonRenderer("Add to cart!"));
+			    table.getColumn("Buy").setCellEditor(new ButtonEditorResultAddToCart(new JCheckBox(), result_view));
 
 				frame.getContentPane().add(table);
 				frame.getContentPane().add(table.getTableHeader(), BorderLayout.PAGE_START);
@@ -128,8 +113,8 @@ public class UserResultView implements IResultView {
 
 		dm = new DefaultTableModel(data, column_names);
 		table = new JTable(dm);
-		table.getColumn("Buy").setCellRenderer(new ButtonRenderer());
-	    table.getColumn("Buy").setCellEditor(new ButtonEditorResultAdd(new JCheckBox(), this));
+		table.getColumn("Buy").setCellRenderer(new ButtonRenderer("Buy"));
+	    table.getColumn("Buy").setCellEditor(new ButtonEditorResultAddToCart(new JCheckBox(), this));
 
 		frame.getContentPane().add(table);
 		frame.getContentPane().add(table.getTableHeader(), BorderLayout.PAGE_START);
@@ -173,13 +158,25 @@ public class UserResultView implements IResultView {
 
 	@Override
 	public ArrayList<String> getPublisherNames() {
-		// TODO Auto-generated method stub
-		return null;
+		return (result_controller.getPublisherNames());
 	}
 
 	@Override
 	public ArrayList<String> getPublishersPhones() {
-		// TODO Auto-generated method stub
-		return null;
+		return (result_controller.getPublisherPhones());
+	}
+
+	@Override
+	public void updateTable(String[][] data) {
+		this.data = data;
+		dm.setRowCount(0);
+		dm = new DefaultTableModel(data, column_names);
+		table = new JTable(dm);
+		table.getColumn("Buy").setCellRenderer(new ButtonRenderer("Buy"));
+	    table.getColumn("Buy").setCellEditor(new ButtonEditorResultAddToCart(new JCheckBox(), this));
+
+		frame.getContentPane().add(table);
+		frame.getContentPane().add(table.getTableHeader(), BorderLayout.PAGE_START);	
+		frame.setVisible(true);
 	}
 }

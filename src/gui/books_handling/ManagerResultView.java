@@ -24,6 +24,8 @@ public class ManagerResultView implements IResultView {
 
 
 	private ResultViewController result_controller;
+	private IResultView result_view;
+	
 	private JFrame frame;
 	private JTable table;
 	private String[] column_names;
@@ -40,6 +42,7 @@ public class ManagerResultView implements IResultView {
 	 * @throws NotFound 
 	 */
 	public ManagerResultView(ResultViewController r, String[] column_names2, int size) throws NotFound {
+		this.result_view = this;
 		this.total_size_of_data = size;
 		this.column_names = column_names2;
 		this.result_controller = r;
@@ -93,6 +96,13 @@ public class ManagerResultView implements IResultView {
 
 				dm = new DefaultTableModel(data, column_names);
 				table = new JTable(dm);
+				
+				table.getColumn("Buy").setCellRenderer(new ButtonRenderer());
+			    table.getColumn("Buy").setCellEditor(new ButtonEditorResultAddToCart(new JCheckBox(), result_view));
+
+			    table.getColumn("Order").setCellRenderer(new ButtonRenderer());
+			    table.getColumn("Order").setCellEditor(new ButtonEditorResultAddToCart(new JCheckBox(), result_view));
+				
 				frame.getContentPane().add(table);
 				frame.getContentPane().add(table.getTableHeader(), BorderLayout.PAGE_START);
 //				table = new JTable(data, column_names);
@@ -105,10 +115,10 @@ public class ManagerResultView implements IResultView {
 		dm = new DefaultTableModel(data, column_names);
 		table = new JTable(dm);
 		table.getColumn("Buy").setCellRenderer(new ButtonRenderer());
-	    table.getColumn("Buy").setCellEditor(new ButtonEditorResultAdd(new JCheckBox(), this));
+	    table.getColumn("Buy").setCellEditor(new ButtonEditorResultAddToCart(new JCheckBox(), this));
 
 	    table.getColumn("Order").setCellRenderer(new ButtonRenderer());
-	    table.getColumn("Order").setCellEditor(new ButtonEditorResultAdd(new JCheckBox(), this));
+	    table.getColumn("Order").setCellEditor(new ButtonEditorResultAddToCart(new JCheckBox(), this));
 
 		frame.getContentPane().add(table);
 		frame.getContentPane().add(table.getTableHeader(), BorderLayout.PAGE_START);
@@ -161,5 +171,22 @@ public class ManagerResultView implements IResultView {
 	@Override
 	public ArrayList<String> getPublishersPhones() {
 		return (result_controller.getPublisherPhones());
+	}
+
+	@Override
+	public void updateTable(String[][] data) {
+		this.data = data;
+		dm = new DefaultTableModel(data, column_names);
+		
+		table = new JTable(dm);
+		table.getColumn("Buy").setCellRenderer(new ButtonRenderer("Add to cart"));
+	    table.getColumn("Buy").setCellEditor(new ButtonEditorResultAddToCart(new JCheckBox(), this));
+
+	    table.getColumn("Order").setCellRenderer(new ButtonRenderer("Order"));
+	    table.getColumn("Order").setCellEditor(new ButtonEditorResultAddToCart(new JCheckBox(), this));
+
+		frame.getContentPane().add(table);
+		frame.getContentPane().add(table.getTableHeader(), BorderLayout.PAGE_START);
+		
 	}
 }

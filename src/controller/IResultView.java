@@ -18,4 +18,6 @@ public interface IResultView {
 
 	ArrayList<String> getPublishersPhones();
 
+	void updateTable(String[][] data);
+
 }

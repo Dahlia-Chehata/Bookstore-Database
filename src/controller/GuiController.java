@@ -1,6 +1,7 @@
 package controller;
 
 import HelperClasses.NotFound;
+import ModelsImplementation.CartManager;
 import ModelsImplementation.UserManager;
 import ModelsImplementation.UserStatus;
 import ModelsInterfaces.IUser;
@@ -156,5 +157,10 @@ public class GuiController {
 		}
 
 	}
+
+
+//	public CartManager getCartManager() {
+//		return user_controller.getCartManager();
+//	}
 
 }

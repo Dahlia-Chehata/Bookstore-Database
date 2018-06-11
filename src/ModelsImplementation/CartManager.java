@@ -123,8 +123,8 @@ public class CartManager implements ICartManager{
     
     public static void main(String args[]) throws NotFound{
         CartManager mng = new CartManager();
-        System.out.println(mng.addBook(new User(1), new Book("LLIU"), 10));
-        System.out.println(mng.addBook(new User(1), new Book("LLIU"), 5));
+        System.out.println(mng.addBook(new User(1), new Book("1"), 10));
+      //  System.out.println(mng.addBook(new User(1), new Book("LLI"), 5));
         //mng.flushCart(new User(1));
         System.out.println(mng.getUserCart(new User(1)).get(0).getValue());
                 Mysql.MysqlHandler.getInstance().state();

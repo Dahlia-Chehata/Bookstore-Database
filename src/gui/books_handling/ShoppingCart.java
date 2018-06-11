@@ -125,18 +125,23 @@ public class ShoppingCart {
 //		            System.out.println(" " + field1.getText());
 //		            int amount = Integer.parseInt(field1.getText());
 		            String credit_card = field2.getText();
-		            Date credit_card_expiry_date = (Date) datePicker.getModel().getValue();
+		            java.util.Date date_picked = (java.util.Date) datePicker.getModel().getValue();
+		            java.sql.Date credit_card_expiry_date = new java.sql.Date(date_picked.getTime());
 
 		            if (!viewCartController.buy(credit_card, credit_card_expiry_date)) {
 		            	JOptionPane.showMessageDialog(null,
-					            "You entered an invalid amount!",
+					            "You entered an invalid information!",
 					            "Try again",
 					            JOptionPane.ERROR_MESSAGE);
+		            	viewCartController.updateBooksQuantity();
+
 		            } else {
 		            	JOptionPane.showMessageDialog(null,
 					            "Congratulations!",
 					            "Congratulations!",
 					            JOptionPane.INFORMATION_MESSAGE);
+		            	viewCartController.updateBooksQuantity();
+		            	frame.dispose();
 		            }
 
 		        }

@@ -11,6 +11,7 @@ import ModelsImplementation.UserManager;
 import ModelsInterfaces.IAuthor;
 import ModelsInterfaces.IBook;
 import ModelsInterfaces.IBooksGetter;
+import ModelsInterfaces.ICartManager;
 import ModelsInterfaces.IPublisher;
 import ModelsInterfaces.IPublisherManager;
 import ModelsInterfaces.IUser;
@@ -115,11 +116,12 @@ public class ResultViewController {
 	}
 
 	public String[][] getData(int i) throws NotFound { //the ith time
+		int k = 0;
+		k = i * 15;
 		for (int j = 0; j < size; j = j + 15) {
 			try {
-				int k = 0;
 				getter = getter_copy.clone();
-				ArrayList<IBook> a = getter.get(15, i);
+				ArrayList<IBook> a = getter.get(15, k);
 				data = generateBooksData(a);
 
 			} catch (CloneNotSupportedException e) {
@@ -176,7 +178,8 @@ public class ResultViewController {
 	}
 
 	public boolean add_to_cart(String ISBN, int number) throws NotFound {
-		cart_manager = new CartManager();
+		cart_manager = searchbook_controller.getCartManager();
+//		cart_manager = new CartManager();
 		IBook book = new Book(ISBN);
 //		IUser user = new User(userId);
 		if (cart_manager.addBook(user, book, number)) {
@@ -222,6 +225,29 @@ public class ResultViewController {
 
 	public ArrayList<String> getPublisherPhones() {
 		return publishers_phones;
+	}
+
+	public ICartManager getCartManager() {
+		return cart_manager;
+//		if (cart_manager != null) {
+//			return cart_manager;
+//		}
+//		return (new CartManager());
+	}
+
+	public void updateBooksQuantity(String[][] data2) {
+		int size = data.length;
+		int size2 = data2.length;
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size2; j++) {
+				if (data[i][0].equals(data2[j][0])) { //isbns are equal
+					Integer before = Integer.parseInt(data[i][4]);
+					Integer difference = Integer.parseInt(data2[j][2]);
+					data[i][4] = String.valueOf(before-difference);
+					result_view.updateTable(data);
+				}
+			}
+		}
 	}
 
 }

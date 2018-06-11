@@ -31,7 +31,7 @@ public class ViewCartController {
 	public ViewCartController(ResultViewController resultViewController) throws NotFound {
 		this.resultViewController = resultViewController;
 		this.user = resultViewController.getUser();
-		cart_manager = new CartManager();
+		cart_manager = resultViewController.getCartManager();
 		user_cart = cart_manager.getUserCart(user);
 		setAttributes();
 		shoppingcart_page = new ShoppingCart(this);
@@ -69,6 +69,10 @@ public class ViewCartController {
 
 	private void getItemsInCart() {
 		items = cart_manager.getUserCart(user);
+	}
+
+	public void updateBooksQuantity() {
+		resultViewController.updateBooksQuantity(data);
 	}
 
 
