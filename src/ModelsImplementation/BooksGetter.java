@@ -237,9 +237,45 @@ public class BooksGetter implements IBooksGetter, Cloneable{
 
     @Override
     public int booksCount() {
-        int val =  get(Integer.MAX_VALUE,0).size();
+                
+        String sqlQuery = "SELECT count( DISTINCT `Books_ISBNs`.`ISBN`) AS count FROM `Books_ISBNs` INNER JOIN `books` " + 
+                " ON `Books_ISBNs`.`Book_id` = `books`.`Book_id` " +
+                " INNER JOIN `Categories` ON `Categories`.`category_id` = `books`.`category_id` "+
+                " LEFT JOIN `Authors` ON `Authors`.`Book_id` = `books`.`Book_id` " +
+                " WHERE " + getCondition();
+        
+        System.out.println(sqlQuery);
+        statementSQL = MysqlHandler.getInstance().getPreparedStatement(sqlQuery);
+        
+        int count = -1;
+        
+        try {
+            
+            //do parameter binding
+            binding();
+            
+            statementSQL.execute();
+            ResultSet books = statementSQL.getResultSet();
+
+            if(books.next()){
+                //Retrieve the data
+                count = books.getInt("count");
+            }else{
+                errorHandler.report("BooksGetter Class", "Can't count.");
+                errorHandler.terminate();                
+            }
+            
+        } catch (SQLException ex) {
+            errorHandler.report("BooksGetter Class", ex.getMessage());
+            errorHandler.terminate();
+        } finally{
+            //Null the selectorStatement
+            MysqlHandler.getInstance().closePreparedStatement(statementSQL);
+            statementSQL = null;
+        }
+
         reset();
-        return val;
+        return count;
     }
 
         @Override
@@ -385,6 +421,6 @@ public class BooksGetter implements IBooksGetter, Cloneable{
     
     public static void main(String argc[]) throws CloneNotSupportedException{
         BooksGetter bg =  new BooksGetter();
-        System.out.println(bg.getBooksByISBN("xxxxx").booksCount());
+        System.out.println(bg.booksCount());
         }
 }

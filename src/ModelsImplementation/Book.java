@@ -455,6 +455,16 @@ public class Book implements IBook{
         
         return dbBookUpdater("Books_ISBNs","Publisher_id",publisherId);
     }
+    @Override
+    public boolean changeAvailableQuantity(int quantity) throws NotFound{
+        
+      
+    	  if(quantity < 0){
+              return false;
+          }
+          
+          return dbBookUpdater("Books_ISBNs","Available_Quantity",quantity);
+    }
 
     @Override
     public boolean addAuthor(IAuthor newAuthour) throws NotFound{

@@ -8,6 +8,8 @@ import javax.swing.JTextField;
 import HelperClasses.NotFound;
 import controller.ManagerModifyBookController;
 
+import javax.swing.ButtonGroup;
+import javax.swing.ButtonModel;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -45,14 +47,18 @@ public class ModifyBook {
 		lblSearchForA.setBounds(10, 38, 115, 24);
 		frame.getContentPane().add(lblSearchForA);
 
-		JRadioButton ISBN_radiobtn = new JRadioButton("ISBN");
+		JRadioButton ISBN_radiobtn = new JRadioButton("ISBN",false);
 		ISBN_radiobtn.setBounds(16, 88, 109, 23);
 		frame.getContentPane().add(ISBN_radiobtn);
 
-		JRadioButton title_radiobtn = new JRadioButton("Title");
+		JRadioButton title_radiobtn = new JRadioButton("Title",false);
 		title_radiobtn.setBounds(16, 114, 109, 23);
 		frame.getContentPane().add(title_radiobtn);
 
+		ButtonGroup grp = new ButtonGroup();
+		grp.add(title_radiobtn);
+		grp.add(ISBN_radiobtn);
+		
 		textField = new JTextField();
 		textField.setBounds(16, 172, 241, 20);
 		frame.getContentPane().add(textField);
@@ -65,8 +71,12 @@ public class ModifyBook {
 				String input = textField.getText();
 				manager_modifybook_controller.set_text(input);
 				if (ISBN_radiobtn.isSelected()) {
+					//grp.setSelected((ButtonModel) ISBN_radiobtn, true);
+					ISBN_radiobtn.setSelected(true);
 					manager_modifybook_controller.set_search_method(0);
 				} else { //it is a title
+				//grp.setSelected( (ButtonModel) title_radiobtn, true);
+					title_radiobtn.setSelected(true);
 					manager_modifybook_controller.set_search_method(1);
 				}
 				try {

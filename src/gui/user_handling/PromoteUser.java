@@ -50,7 +50,7 @@ public class PromoteUser {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 448, 292);
+		frame.setBounds(100, 100, 500, 292);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
@@ -96,7 +96,7 @@ public class PromoteUser {
 			}
 		});
 		btnPromoteUser.setFont(new Font("Times New Roman", Font.BOLD, 16));
-		btnPromoteUser.setBounds(260, 127, 125, 36);
+		btnPromoteUser.setBounds(260, 127, 200, 36);
 		frame.getContentPane().add(btnPromoteUser);
 
 

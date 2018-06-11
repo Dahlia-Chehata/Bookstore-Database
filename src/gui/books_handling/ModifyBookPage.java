@@ -25,7 +25,7 @@ public class ModifyBookPage {
 	private JFrame frame;
 	private JTextField textField_id;
 	private JTextField isbn;
-	private JTextField title;
+	private JLabel title;
 	private JLabel lblTitle;
 	private JLabel lblThreshold;
 	private JTextField threshold;
@@ -85,8 +85,8 @@ public class ModifyBookPage {
 		isbn.setBounds(129, 53, 86, 20);
 		frame.getContentPane().add(isbn);
 
-		title = new JTextField(book.getTitle());
-		title.setColumns(10);
+		title = new JLabel(book.getTitle());
+		title.setFont(new Font("Times New Roman", Font.BOLD, 13));
 		title.setBounds(139, 92, 261, 20);
 		frame.getContentPane().add(title);
 

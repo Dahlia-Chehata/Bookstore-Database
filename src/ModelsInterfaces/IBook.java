@@ -134,4 +134,6 @@ public interface IBook {
      * false otherwise.
      */
     boolean removeAuthour(IAuthor currAuthour) throws NotFound;
+
+	boolean changeAvailableQuantity(int quantity) throws NotFound;
 }

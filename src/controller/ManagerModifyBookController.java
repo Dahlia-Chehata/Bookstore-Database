@@ -2,6 +2,8 @@ package controller;
 
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
 import HelperClasses.NotFound;
 import ModelsInterfaces.IBook;
 import ModelsInterfaces.IBooksGetter;
@@ -51,7 +53,9 @@ public class ManagerModifyBookController {
 		if (!(getter.get().isEmpty())) {
 			book_to_be_modified = getter.get().get(0);
 			modifybook_page_book = new ModifyBookPage(this, book_to_be_modified);
-
+		}else {
+			JOptionPane.showMessageDialog(null,
+			"No such item!","Try again", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -61,7 +65,17 @@ public class ManagerModifyBookController {
 	}
 
 	public void setAvailable_quantity(String text2) {
-//		book_to_be_modified.q
+   	try {
+		if (!book_to_be_modified.changeAvailableQuantity(Integer.parseInt(text2)))
+			JOptionPane.showMessageDialog(null,
+		"ERROR in Available quantity update!","Try again", JOptionPane.ERROR_MESSAGE);
+	} catch (NumberFormatException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} catch (NotFound e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
 		
 	}
 
@@ -70,13 +84,26 @@ public class ManagerModifyBookController {
 //			book_to_be_modified.changeCategory(newCategory);
 		}
 	}
-
-	public void setBook_isbn(String text2) {
+	public void setBook_title(String text2) {
 		try {
-			book_to_be_modified.changeISBN(text2);
+			if (!book_to_be_modified.changeTitle(text2))
+				JOptionPane.showMessageDialog(null,
+				"ERROR in title update!","Try again", JOptionPane.ERROR_MESSAGE);
 		} catch (NotFound e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			
+		}
+	}
+	public void setBook_isbn(String text2) {
+		try {
+			if (!book_to_be_modified.changeISBN(text2))
+				JOptionPane.showMessageDialog(null,
+			"ERROR in ISBN update!","Try again", JOptionPane.ERROR_MESSAGE);
+		} catch (NotFound e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			
 		}
 	}
 
@@ -87,28 +114,37 @@ public class ManagerModifyBookController {
 
 	public void setPub_year(String text2) {
 		try {
-			book_to_be_modified.changePublicationYear(Integer.parseInt(text2));
+			if (!book_to_be_modified.changePublicationYear(Integer.parseInt(text2)))
+				JOptionPane.showMessageDialog(null,
+		"ERROR in publication year update!","Try again", JOptionPane.ERROR_MESSAGE);
 		} catch (NumberFormatException | NotFound e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			
 		}
 	}
 
 	public void setSelling_price(String text2) {
 		try {
-			book_to_be_modified.changePrice(Double.parseDouble(text2));
+			if (!book_to_be_modified.changePrice(Double.parseDouble(text2)))
+				JOptionPane.showMessageDialog(null,
+			"ERROR in price update!","Try again", JOptionPane.ERROR_MESSAGE);
 		} catch (NumberFormatException | NotFound e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			
 		}
 	}
 
 	public void setThreshold(String text2) {
 		try {
-			book_to_be_modified.setThreshold(Integer.parseInt(text2));
+			if (!book_to_be_modified.setThreshold(Integer.parseInt(text2)))
+				JOptionPane.showMessageDialog(null,
+			"ERROR in Threshold update!","Try again", JOptionPane.ERROR_MESSAGE);
 		} catch (NumberFormatException | NotFound e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			
 		}
 	}
 
