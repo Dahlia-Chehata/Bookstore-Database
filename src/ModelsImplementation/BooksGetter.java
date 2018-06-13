@@ -12,6 +12,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -29,7 +31,7 @@ public class BooksGetter implements IBooksGetter, Cloneable{
     
     //to search
     private final ArrayList<String> match;
-    private final ArrayList<String> against;
+    public final ArrayList<String> against;
     
     private boolean invalid;
     
@@ -70,6 +72,13 @@ public class BooksGetter implements IBooksGetter, Cloneable{
     
     @Override
     public IBooksGetter searchBooksByTitle(String bookTitle) {
+        
+        //Handle three or less chars.
+        if(bookTitle.length() <= 3){
+            this.getBooksByTitle(bookTitle);
+            return this;
+        }
+        
         match.add("books.Title");
         against.add(bookTitle);
         return this;
@@ -169,7 +178,8 @@ public class BooksGetter implements IBooksGetter, Cloneable{
             }
             totalConditions++;
             
-            condition += " MATCH ( " +  match.get(i) + " ) AGAINST (? IN BOOLEAN MODE) ";
+           condition += " MATCH ( " +  match.get(i) + " ) AGAINST (? IN BOOLEAN MODE) ";
+           // condition+=  match.get(i) +" =? ";
         }
         
         if(condition.equals("")){
@@ -332,7 +342,7 @@ public class BooksGetter implements IBooksGetter, Cloneable{
         
         ArrayList<IBook> booksList = new ArrayList<>();
         
-        String sqlQuery = "SELECT DISTINCT `Books_ISBNs`.`ISBN` FROM `Books_ISBNs` INNER JOIN `books` " + 
+        String sqlQuery = "SELECT DISTINCT `Books_ISBNs`.`ISBN`  FROM `Books_ISBNs` INNER JOIN `books` " + 
                 " ON `Books_ISBNs`.`Book_id` = `books`.`Book_id` " +
                 " INNER JOIN `Categories` ON `Categories`.`category_id` = `books`.`category_id` "+
                 " LEFT JOIN `Authors` ON `Authors`.`Book_id` = `books`.`Book_id` " +
@@ -377,6 +387,13 @@ public class BooksGetter implements IBooksGetter, Cloneable{
 
     @Override
     public IBooksGetter searchBooksByISBN(String bookISBN) {
+        
+        //Handle three or less chars.
+        if(bookISBN.length() <= 3){
+            this.getBooksByISBN(bookISBN);
+            return this;
+        }
+        
         match.add("Books_ISBNs.ISBN");
         against.add(bookISBN);
         return this;
@@ -390,7 +407,7 @@ public class BooksGetter implements IBooksGetter, Cloneable{
     }
 
     @Override
-    public IBooksGetter searchBooksByPublisher(String publisherName) {
+    public IBooksGetter searchBooksByPublisher(String publisherName) {        
         match.add("Publishers.Publisher_Name");
         against.add(publisherName);
         return this;

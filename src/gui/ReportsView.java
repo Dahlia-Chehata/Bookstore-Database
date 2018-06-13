@@ -11,6 +11,7 @@ import controller.ManagerViewReportsController;
 import javax.swing.JButton;
 import java.awt.Font;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 import java.awt.event.ActionEvent;
 import javax.swing.JTable;
 
@@ -61,35 +62,27 @@ public class ReportsView {
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			frame.getContentPane().setLayout(new BorderLayout(0, 0));
 
-			JSplitPane splitPane = new JSplitPane();
-			frame.getContentPane().add(splitPane, BorderLayout.SOUTH);
-
-			JButton btnBack = new JButton("Back");
-			btnBack.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent arg0) {
-					frame.setVisible(false);
-					frame.dispose();
-					manager_viewreports_controller.back();
-				}
-			});
-			btnBack.setFont(new Font("Times New Roman", Font.BOLD, 16));
-			splitPane.setLeftComponent(btnBack);
+//			JSplitPane splitPane = new JSplitPane();
+//			frame.getContentPane().add(splitPane, BorderLayout.SOUTH);
+//
+//			
 
 			JButton btnGoToHomepage = new JButton("Go to Homepage");
 			btnGoToHomepage.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
-					frame.setVisible(false);
+//					frame.setVisible(false);
 					frame.dispose();
 //					frame.dispatchEvent(new WindowEvent());
-//					frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+//					frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_DEACTIVATED));
 
 					manager_viewreports_controller.gotoHomePage();
 				}
 			});
 			btnGoToHomepage.setFont(new Font("Times New Roman", Font.BOLD, 15));
-			splitPane.setRightComponent(btnGoToHomepage);
+			frame.getContentPane().add(btnGoToHomepage, BorderLayout.SOUTH);
+
+//			splitPane.setRightComponent(btnGoToHomepage);
 
 			table = new JTable(data, column_names);
 			frame.getContentPane().add(table, BorderLayout.CENTER);

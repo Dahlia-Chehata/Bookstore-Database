@@ -34,22 +34,6 @@ public class ResultView {
 //	private int userId;
 
 	/**
-	 * Launch the application.
-	 */
-//	public static void main(String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-//					ResultView window = new ResultView();
-//					window.frame.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
-
-	/**
 	 * Create the application.
 	 */
 	public ResultView(ResultViewController r) {
@@ -69,32 +53,25 @@ public class ResultView {
 		JSplitPane splitPane = new JSplitPane();
 		frame.getContentPane().add(splitPane, BorderLayout.SOUTH);
 
-		JLabel lblNewLabel = new JLabel("Viewing 10 of 100 Results");
+		JLabel lblNewLabel = new JLabel("Viewing 15 of " + total_size_of_data + " Results");
 		lblNewLabel.setFont(new Font("Times New Roman", Font.BOLD, 16));
 		splitPane.setLeftComponent(lblNewLabel);
 
 		JSplitPane splitPane_1 = new JSplitPane();
 		splitPane.setRightComponent(splitPane_1);
 
-		JButton btnViewCart = new JButton("View Cart");
-		btnViewCart.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				result_controller.viewCart();
-			}
-		});
-		btnViewCart.setFont(new Font("Times New Roman", Font.BOLD, 16));
-		splitPane_1.setLeftComponent(btnViewCart);
+		JSplitPane splitPane_2 = new JSplitPane();
+		splitPane_1.setRightComponent(splitPane_2);
 
 		JButton btnNext = new JButton("Next");
-		btnNext.setFont(new Font("Times New Roman", Font.BOLD, 16));
 		btnNext.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(ActionEvent e) {
 				number_of_next_clicks++;
 				try {
 					data = result_controller.getData(number_of_next_clicks);
-				} catch (NotFound e) {
+				} catch (NotFound e1) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					e1.printStackTrace();
 				}
 
 				dm.setRowCount(0);
@@ -106,7 +83,23 @@ public class ResultView {
 //				table = new JTable(data, column_names);
 			}
 		});
-		splitPane_1.setRightComponent(btnNext);
+		btnNext.setFont(new Font("Times New Roman", Font.BOLD, 15));
+		splitPane_2.setRightComponent(btnNext);
+
+		JButton btnViewCart_1 = new JButton("View Cart");
+		btnViewCart_1.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent arg0) {
+				result_controller.viewCart();
+
+			}
+		});
+		btnViewCart_1.setFont(new Font("Times New Roman", Font.BOLD, 16));
+		splitPane_2.setLeftComponent(btnViewCart_1);
+
+		JLabel lblNewLabel_1 = new JLabel("Page 1 of 3");
+		lblNewLabel_1.setFont(new Font("Times New Roman", Font.BOLD, 16));
+		splitPane_1.setLeftComponent(lblNewLabel_1);
 
 
 		dm = new DefaultTableModel(data, column_names);

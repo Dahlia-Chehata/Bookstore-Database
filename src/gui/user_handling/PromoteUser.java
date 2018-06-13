@@ -51,7 +51,7 @@ public class PromoteUser {
 	private void initialize() {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 500, 292);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
 		JLabel lblUsersEmail = new JLabel("User's Email");
@@ -71,7 +71,7 @@ public class PromoteUser {
 		lblNewLabel.setVisible(false);
 
 		JLabel lblNewLabel1 = new JLabel("You've successfully promoted the user.");
-		lblNewLabel1.setForeground(Color.RED);
+		lblNewLabel1.setForeground(Color.BLUE);
 		lblNewLabel1.setBounds(10, 210, 350, 14);
 		frame.getContentPane().add(lblNewLabel1);
 		lblNewLabel1.setVisible(false);

@@ -376,7 +376,7 @@ public class Book implements IBook{
     @Override
     public boolean changeISBN(String newISBN) throws NotFound{
         
-        if(newISBN == null || newISBN.length() == 0 || newISBN.length() > 40){
+        if(newISBN == null || newISBN.length() == 0 || newISBN.length() > 100){
             return false;
         }
         
@@ -386,7 +386,7 @@ public class Book implements IBook{
     @Override
     public boolean changeTitle(String newTitle) throws NotFound{
         
-        if(newTitle == null || newTitle.length() == 0 || newTitle.length() > 40){
+        if(newTitle == null || newTitle.length() == 0 || newTitle.length() > 100){
             return false;
         }
         

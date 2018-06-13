@@ -119,6 +119,7 @@ public class ManagerActionsPage {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String button_selected = getSelectedButtonText(buttonGroup);
+				frame.dispose();
 				manager_controller.view_reports(button_selected);
 			}
 		});

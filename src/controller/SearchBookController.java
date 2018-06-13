@@ -126,11 +126,12 @@ public class SearchBookController {
 	}
 
 	public void setCategory(String category) {
-		if (category.length() != 0) {
-			this.category = category;
-//			ICategoryManager cat_manager = new CategoryManager();
-//			this.book_category = cat_manager.addCategory(category);
-		}
+		this.category = category;
+//		if (category.length() != 0) {
+//			this.category = category;
+////			ICategoryManager cat_manager = new CategoryManager();
+////			this.book_category = cat_manager.addCategory(category);
+//		}
 
 	}
 
@@ -224,16 +225,20 @@ public class SearchBookController {
 //				ArrayList<IPublisher> p = p_manager.getByName(pub_name);
 //				getter = getter.getBooksByPublisher(p.get(0));
 			}
-			if (authors.size() != 0) {
+			if (authors_before.length() != 0) {
+				getter = getter.searchBooksByAuthor(authors_before);
+				
+			}
+//			if (authors.size() != 0) {
 //				IAuthorManager a_manager = new AuthorManager();
 //				for (int i = 0; i < authors.size(); i++) {
 //					IAuthor a = a_manager.getOrAddAuthor(authors.get(i).getName());
 //
 //					getter = getter.getBooksByAuthor(a);
 //				}
-				getter = getter.searchBooksByAuthor(authors_before);
-			}
-			if (book_category != null) {
+//				getter = getter.searchBooksByAuthor(authors_before);
+//			}
+			if (category.length() != 0) {
 				getter = getter.searchBooksByCategory(category);
 			}
 			if ((threshold_min_int != -1) && (threshold_max_int != -1)) { //search by threshold

@@ -33,6 +33,8 @@ public class ManagerResultView implements IResultView {
 	private int total_size_of_data;
 	protected DefaultTableModel dm;
 	private int number_of_next_clicks;
+	private int number_of_pages;
+	private int page_number;
 
 
 	/**
@@ -62,13 +64,24 @@ public class ManagerResultView implements IResultView {
 		JSplitPane splitPane = new JSplitPane();
 		frame.getContentPane().add(splitPane, BorderLayout.SOUTH);
 
-		JLabel lblNewLabel = new JLabel("Viewing 10 of 100 Results");
+		
+		JLabel lblNewLabel = new JLabel();
+		if (total_size_of_data < 15) {
+			lblNewLabel.setText("Viewing " + total_size_of_data + " of " + total_size_of_data + " Results");
+		} else {
+			lblNewLabel.setText("Viewing 15 of " + total_size_of_data + " Results");
+		}
+		
 		lblNewLabel.setFont(new Font("Times New Roman", Font.BOLD, 16));
 		splitPane.setLeftComponent(lblNewLabel);
 
 		JSplitPane splitPane_1 = new JSplitPane();
 		splitPane.setRightComponent(splitPane_1);
 
+		JSplitPane splitPane_2 = new JSplitPane();
+		splitPane_1.setRightComponent(splitPane_2);
+		
+		
 		JButton btnViewCart = new JButton("View Cart");
 		btnViewCart.addActionListener(new ActionListener() {
 			@Override
@@ -77,47 +90,61 @@ public class ManagerResultView implements IResultView {
 			}
 		});
 		btnViewCart.setFont(new Font("Times New Roman", Font.BOLD, 16));
-		splitPane_1.setLeftComponent(btnViewCart);
+		splitPane_2.setLeftComponent(btnViewCart);
+		
+		page_number = 1;	
+		number_of_pages = (int) Math.ceil((total_size_of_data/15) + 0.5);
 
+		JLabel lblNewLabel_1 = new JLabel("Page " + page_number +" of " + number_of_pages);
+		lblNewLabel_1.setFont(new Font("Times New Roman", Font.BOLD, 16));
+		splitPane_1.setLeftComponent(lblNewLabel_1);
+		
+		
 		JButton btnNext = new JButton("Next");
 		btnNext.setFont(new Font("Times New Roman", Font.BOLD, 16));
 		btnNext.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				number_of_next_clicks++;
-				try {
-					data = result_controller.getData(number_of_next_clicks);
-				} catch (NotFound e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				if ((number_of_next_clicks + 1) <= number_of_pages) {
+					page_number++;
+					try {
+						data = result_controller.getData(number_of_next_clicks);
+					} catch (NotFound e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					lblNewLabel.setText("Viewing " + (total_size_of_data - 15) + " of " + total_size_of_data + " Results");
+					lblNewLabel_1.setText("Page " + page_number + " of " + number_of_pages);
+
+					dm.setRowCount(0);
+
+					dm = new DefaultTableModel(data, column_names);
+					table = new JTable(dm);
+					
+					table.getColumn("Buy").setCellRenderer(new ButtonRenderer("Add to cart"));
+				    table.getColumn("Buy").setCellEditor(new ButtonEditorResultAddToCart(new JCheckBox(), result_view));
+
+				    table.getColumn("Order").setCellRenderer(new ButtonRenderer("Order Book"));
+				    table.getColumn("Order").setCellEditor(new ButtonEditorResultAddToCart(new JCheckBox(), result_view));
+					
+					frame.getContentPane().add(table);
+					frame.getContentPane().add(table.getTableHeader(), BorderLayout.PAGE_START);
+//					table = new JTable(data, column_names);
 				}
-
-				dm.setRowCount(0);
-
-				dm = new DefaultTableModel(data, column_names);
-				table = new JTable(dm);
-				
-				table.getColumn("Buy").setCellRenderer(new ButtonRenderer());
-			    table.getColumn("Buy").setCellEditor(new ButtonEditorResultAddToCart(new JCheckBox(), result_view));
-
-			    table.getColumn("Order").setCellRenderer(new ButtonRenderer());
-			    table.getColumn("Order").setCellEditor(new ButtonEditorResultAddToCart(new JCheckBox(), result_view));
-				
-				frame.getContentPane().add(table);
-				frame.getContentPane().add(table.getTableHeader(), BorderLayout.PAGE_START);
-//				table = new JTable(data, column_names);
 			}
 		});
-		splitPane_1.setRightComponent(btnNext);
+		splitPane_2.setRightComponent(btnNext);
 
 		
 		data = result_controller.getData(0);
 		dm = new DefaultTableModel(data, column_names);
 		table = new JTable(dm);
-		table.getColumn("Buy").setCellRenderer(new ButtonRenderer());
+		table.getColumn("Buy").setCellRenderer(new ButtonRenderer("Add to cart"));
 	    table.getColumn("Buy").setCellEditor(new ButtonEditorResultAddToCart(new JCheckBox(), this));
 
-	    table.getColumn("Order").setCellRenderer(new ButtonRenderer());
+	    table.getColumn("Order").setCellRenderer(new ButtonRenderer("Order Book"));
 	    table.getColumn("Order").setCellEditor(new ButtonEditorResultAddToCart(new JCheckBox(), this));
 
 		frame.getContentPane().add(table);
@@ -182,11 +209,12 @@ public class ManagerResultView implements IResultView {
 		table.getColumn("Buy").setCellRenderer(new ButtonRenderer("Add to cart"));
 	    table.getColumn("Buy").setCellEditor(new ButtonEditorResultAddToCart(new JCheckBox(), this));
 
-	    table.getColumn("Order").setCellRenderer(new ButtonRenderer("Order"));
+	    table.getColumn("Order").setCellRenderer(new ButtonRenderer("Order Book"));
 	    table.getColumn("Order").setCellEditor(new ButtonEditorResultAddToCart(new JCheckBox(), this));
 
 		frame.getContentPane().add(table);
 		frame.getContentPane().add(table.getTableHeader(), BorderLayout.PAGE_START);
+		frame.setVisible(true);
 		
 	}
 }

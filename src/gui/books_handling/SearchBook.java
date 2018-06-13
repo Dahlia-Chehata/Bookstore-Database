@@ -137,10 +137,10 @@ public class SearchBook {
 		author_names.setBounds(157, 304, 233, 20);
 		frame.getContentPane().add(author_names);
 
-		lblNewLabel_1 = new JLabel("Separate author names by (,). Ex. John Marc, Philip Kane");
-		lblNewLabel_1.setForeground(Color.GRAY);
-		lblNewLabel_1.setBounds(87, 333, 363, 14);
-		frame.getContentPane().add(lblNewLabel_1);
+//		lblNewLabel_1 = new JLabel("Separate author names by (,). Ex. John Marc, Philip Kane");
+//		lblNewLabel_1.setForeground(Color.GRAY);
+//		lblNewLabel_1.setBounds(87, 333, 363, 14);
+//		frame.getContentPane().add(lblNewLabel_1);
 
 		lblPublisherYear = new JLabel("Publication Year (oldest)");
 		lblPublisherYear.setFont(new Font("Times New Roman", Font.BOLD, 13));
@@ -236,6 +236,7 @@ public class SearchBook {
 		if (!(author_names.getText().isEmpty())) {
 			seachbook_controller.setAuthors_before(author_names.getText());
 		}
+		seachbook_controller.setBook_title(title.getText());
 		seachbook_controller.setAvailable_quantity(avail_quant_min.getText(), avail_quant_max.getText());
 		seachbook_controller.setCategory(bookcategories.getSelectedItem().toString());
 		seachbook_controller.setBook_isbn(textField_isbn.getText());

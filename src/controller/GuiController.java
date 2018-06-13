@@ -77,14 +77,12 @@ public class GuiController {
 
 	private static void user_signup() {
 		SignupPage signup_page = new SignupPage();
-		
-//		signup_page.hide_frame();
-		while (!pass_login_signup) {
-			
-		}
+				
+	}
+	
+	private void openCustomerActionPage() {
 		user_controller = new Customer_controller(gui_controller, userId);
 		user_controller.start();
-		
 	}
 
 
@@ -124,6 +122,7 @@ public class GuiController {
 		if (loggedin_user != null) {
 			pass_login_signup = true;
 			userId = loggedin_user.getId();
+			openCustomerActionPage();
 		}
 	}
 
